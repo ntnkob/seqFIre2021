@@ -5,7 +5,7 @@
 ## Program: SeqFIRE: Sequence Feature and Indel Region Extractor                       ##
 ## Version: 2.21 (2021)                                                                ##
 #########################################################################################
-import getopt, sys, os, re
+import getopt, sys, os, re, warnings
 from math import log10
 
 ####################################
@@ -134,7 +134,7 @@ def parseFasta(records):
 
 def getGapProfile(seq_lists):
 	gap_profile = ''
-	for i in range(0, len(seq_lists[0][1]), 1):
+	for i in range(len(seq_lists[0][1])):
 		g = []
 		for seq_list in seq_lists:
 			g.append(seq_list[1][i])
@@ -142,6 +142,7 @@ def getGapProfile(seq_lists):
 			gap_profile = gap_profile + '-'
 		else:
 			gap_profile = gap_profile + 'X'
+	print("Gap profiling complete:\n",gap_profile)
 	return gap_profile
 
 #########################################################################
@@ -173,7 +174,7 @@ def genMaskRef(seq_lists, position):
 		count = 0
 		for seq_list in seq_lists:
 			if not seq_list[1][i] == '-': count += 1
-		if float(count)/float(len(seq_lists))*100.0 >= 55.0: ref = ref + '?'
+		if float(count)//float(len(seq_lists))*100.0 >= 55.0: ref = ref + '?'
 		else: ref = ref + '-'
 	return ref
 
@@ -265,7 +266,7 @@ def getSimilarityScore(aa):
 		for a in aa:
 			aa_dict[a] = aa_dict[a] + 1
 		k = max(aa_dict, key=aa_dict.get)
-		similarity = (float(aa_dict[k]) * 100.0) / float(len(aa))
+		similarity = (float(aa_dict[k]) * 100.0) // float(len(aa))
 		if twilight == 'True':
 			if similarity >= 30.0: return 'C'
 			else: return '.'
@@ -282,7 +283,7 @@ def getSimilarityScore(aa):
 		for aa_sets in pMatrix:
 			m = 0
 			for aa_set in aa_sets: m = m + int(aa_dict[aa_set])
-			c.append((float(m)*100.0)/float(len(aa)))
+			c.append((float(m)*100.0)//float(len(aa)))
 		similarity = max(c)
 		if twilight == 'True':
 			if similarity >= 30.0: return 'C'
@@ -337,12 +338,12 @@ def getRuler(title_length, seq_length):
 	ruler = ' ' * title_length
 	for i in  range(50, seq_length, 50):
 		ruler = ruler + ' ' * (50 - len(str(i))) + str(i)
-	scale = ' ' * title_length + scale_of_10 * (seq_length/10) + scale_of_10[0:seq_length % 10]
+	scale = ' ' * title_length + scale_of_10 * (seq_length//10) + scale_of_10[0:seq_length % 10]
 	return ruler + '\n' + scale
 
 def genIndelAlignment(seq_lists, indel_profile, ruler, indel_positions):
 	output_indel_1 = []
-	heading = '%s\n#  OUTPUT: ANNOTATED ALIGNMENT\n#  There are %s indels found.\n' % (prog_title, len(indel_positions)/2)
+	heading = '%s\n#  OUTPUT: ANNOTATED ALIGNMENT\n#  There are %s indels found.\n' % (prog_title, len(indel_positions)//2)
 	output_indel_1.append(heading)
 	output_indel_1.append(ruler)
 	for seq_list in seq_lists:
@@ -406,7 +407,7 @@ def search_for_simple_indels(pseudoalignments, inter_indels, indel_positions):
 
 def genIndelLists(pseudoalignments, inter_indels, indel_positions, simple_indel_positions):
 	output_indel_2 = []
-	heading = '%s\n#  OUTPUT: INDEL LIST\n#  There are %s indels found.\n#  ** indicates masked sequence\n' % (prog_title, len(indel_positions)/2)
+	heading = '%s\n#  OUTPUT: INDEL LIST\n#  There are %s indels found.\n#  ** indicates masked sequence\n' % (prog_title, len(indel_positions)//2)
 	output_indel_2.append(heading)
 	id = 1
 	for i in range(0, len(indel_positions), 2):
@@ -528,9 +529,15 @@ def getIndelCharacter(output_indel_2, simple_indel_positions, indel_positions):
 
 def indelExtraction(handle):
 	pseudoalignments = genPseudoalignment(handle)
+	print("Pseudo alignments:")
+	for onepalign in pseudoalignments:
+    		print(onepalign)
 	conserved_block_profile = getConservedBlockProfile(pseudoalignments)
+	print("Conserved block profile:\n",conserved_block_profile)
 	indel_profile = getIndelProfile(conserved_block_profile)
+	print("Indel profile:\n",indel_profile)
 	indel_positions = getIndelPositions(indel_profile)
+	print("Indel positions:\n",indel_positions)
 	ruler = getRuler(len(handle[0][0]), len(handle[0][1]))
 
 	######################
@@ -607,21 +614,21 @@ def getListOfSimilarityScores(handle):
 			aa_dict[seq_list[1][i]] += 1
 
 		if p_matrix_2 == 'NONE':
-			if (float(aa_dict['-']) * 100.0) / float(len(handle)) >= percent_accept_gap:
+			if (float(aa_dict['-']) * 100.0) // float(len(handle)) >= percent_accept_gap:
 				similarityList.append('-')
 			else:
 				k = max(aa_dict, key=aa_dict.get)
 				similarityList.append((float(aa_dict[k]) * 100.0) / float(len(handle)))
 		else:
 			pMatrix = pMatrices[p_matrix_2]
-			if (float(aa_dict['-']) * 100.0) / float(len(handle)) >= percent_accept_gap:
+			if (float(aa_dict['-']) * 100.0) // float(len(handle)) >= percent_accept_gap:
 				similarityList.append('-')
 			else:
 				c = []
 				for aa_sets in pMatrix:
 					m = 0
 					for aa_set in aa_sets: m = m + int(aa_dict[aa_set])
-					c.append((float(m)*100.0)/float(len(handle)))
+					c.append((float(m)*100.0)//float(len(handle)))
 				similarityList.append(max(c))
 	return similarityList
 		
@@ -690,11 +697,11 @@ def getInformationEntropy(handle):
 def getMedian(numericValues):
 	theValues = sorted(numericValues)
 	if len(theValues) % 2 == 1:
-		return theValues[(len(theValues)+1)/2-1]
+		return theValues[(len(theValues)+1)//2-1]
 	else:
-		lower = theValues[len(theValues)/2-1]
-		upper = theValues[len(theValues)/2]
-	return (float(lower + upper)) / 2  
+		lower = theValues[len(theValues)//2-1]
+		upper = theValues[len(theValues)//2]
+	return (float(lower + upper)) // 2  
 
 def getEntropyProfile(entropy_list):
 	datalists = []
@@ -887,7 +894,7 @@ def genNexusWithConservedBlockOnly(output_conserved_3):
 
 	head = '#NEXUS\nBEGIN DATA;\n     DIMENSIONS NTAX=%s NCHAR=%s;\
  		    \n     FORMAT MISSING=? DATATYPE=PROTEIN GAP=- EQUATE="0=K 1=D";\
- 		    \n     OPTIONS GAPMODE=MISSING;\n\nMATRIX' % (len(output_conserved_3)/2, len(output_conserved_3[1]))
+ 		    \n     OPTIONS GAPMODE=MISSING;\n\nMATRIX' % (len(output_conserved_3)//2, len(output_conserved_3[1]))
 	output_conserved_5.append(head)
 	
 	r = getRuler(len(output_conserved_3[0]), len(output_conserved_3[1])).split('\n')
@@ -989,6 +996,31 @@ def conservedBlockExtraction(handle):
 
 #########################################################################
 ######                                                             ######
+######             U T I L I T I E S   S E C T I O N               ######
+######                                                             ######
+#########################################################################
+
+def checkSeqType(seqList):
+    seqType = {"DNA":0, "Protein": 0}
+    for oneSeq in seqList:
+        letter_dict = {'A': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0,'K': 0, 'L': 0, 'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0,'T': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0}
+        print("Checking sequence: ",oneSeq[0])
+        for oneLetter in oneSeq[1]:
+            if oneLetter!='-': letter_dict[oneLetter] = letter_dict[oneLetter] + 1
+        sumDNACount = letter_dict['A']+letter_dict['C']+letter_dict['T']+letter_dict['G']
+        if sum(letter_dict.values())==sumDNACount:
+            seqType['DNA'] = seqType['DNA'] + 1
+        else:
+            seqType['Protein'] = seqType['Protein'] + 1
+    if sum(seqType.values())==seqType['DNA']:
+    	return "DNA"
+    elif sum(seqType.values())==seqType['Protein']:
+        return "Protein"
+    else:
+        return "Cannot determine"
+
+#########################################################################
+######                                                             ######
 ######         S e q F I R E ' s   M A I N   P R O G R A M         ######
 ######                                                             ######
 #########################################################################
@@ -1041,17 +1073,24 @@ if multidata == 1:
 	record = f.read()
 	handle = parseFasta(record)
 	f.close()
+	if checkSeqType(handle)=='Cannot determine':
+    	#User have to specify the sequence type themselves
+		warning.warn("Specify sequence type!")
 	if analysis_mode == 1: indelExtraction(handle) ### INDEL REGION MODULE ###
 	elif analysis_mode == 2: conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
 elif multidata == 2:
 	f = open(r'%s' % (infile), 'r')
 	records = f.read().split('==seq==')
+	f.close()
 	del records[0]
 	for record in records:
 		a = record.split('==fire==')
 		filename = a[0]
 		print (filename)
 		handle = parseFasta(a[1])
+		if checkSeqType(handle)=='Cannot determine':
+        	#User have to specify the sequence type themselves
+			warning.warn("Specify sequence type!")
 
 		if output_mode == 1 or output_mode == 3:
 			print ('==seq==%s==fire==' % filename)
