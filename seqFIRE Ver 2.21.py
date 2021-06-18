@@ -1019,6 +1019,12 @@ def checkSeqType(seqList):
     else:
         return "Cannot determine"
 
+def checkMultipleSeq(handle):
+	if len(handle)>=2:
+		return "Multiple alignment"
+	else:
+		return "Single alignment"
+
 #########################################################################
 ######                                                             ######
 ######         S e q F I R E ' s   M A I N   P R O G R A M         ######
@@ -1075,7 +1081,10 @@ if multidata == 1:
 	f.close()
 	if checkSeqType(handle)=='Cannot determine':
     	#User have to specify the sequence type themselves
-		warning.warn("Specify sequence type!")
+		warnings.warn("Specify sequence type!")
+	if checkMultipleSeq(handle)=='Single alignment':
+		#User have to input multiple alignment sequence
+		warnings.warn("Single alignment detected")
 	if analysis_mode == 1: indelExtraction(handle) ### INDEL REGION MODULE ###
 	elif analysis_mode == 2: conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
 elif multidata == 2:
@@ -1090,7 +1099,7 @@ elif multidata == 2:
 		handle = parseFasta(a[1])
 		if checkSeqType(handle)=='Cannot determine':
         	#User have to specify the sequence type themselves
-			warning.warn("Specify sequence type!")
+			warnings.warn("Specify sequence type!")
 
 		if output_mode == 1 or output_mode == 3:
 			print ('==seq==%s==fire==' % filename)
