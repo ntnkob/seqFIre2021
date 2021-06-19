@@ -1008,7 +1008,7 @@ def checkSeqType(seqList):
         for oneLetter in oneSeq[1]:
             if oneLetter!='-': letter_dict[oneLetter] = letter_dict[oneLetter] + 1
         sumDNACount = letter_dict['A']+letter_dict['C']+letter_dict['T']+letter_dict['G']
-        if sum(letter_dict.values())==sumDNACount:
+        if sumDNACount>=0.9*sum(letter_dict.values()):
             seqType['DNA'] = seqType['DNA'] + 1
         else:
             seqType['Protein'] = seqType['Protein'] + 1
@@ -1020,10 +1020,10 @@ def checkSeqType(seqList):
         return "Cannot determine"
 
 def checkMultipleSeq(handle):
-	if len(handle)>=2:
-		return "Multiple alignment"
-	else:
-		return "Single alignment"
+    if len(handle)>=2:
+        return "Multiple alignment"
+    else: 
+        return "Single alignment"
 
 #########################################################################
 ######                                                             ######
