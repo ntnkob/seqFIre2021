@@ -1151,6 +1151,15 @@ if sys.argv[1:]==[]:
 try:                                
 	opts, args = getopt.getopt(sys.argv[1:], "h:i:a:c:d:j:g:k:b:t:p:s:f:r:e:m:o:")
 
+<<<<<<< HEAD
+=======
+# Old version
+# except getopt.GetoptError, err:
+#	print str(err)
+#	usage()                          
+#	sys.exit(2)
+
+>>>>>>> bf7d4f71946158b90d9faedb4489ab64bae605b0
 except (getopt.GetoptError):
 	print("Invalid arguments")
 	#usage()                          
@@ -1182,6 +1191,7 @@ for opt, arg in opts:
 ###################################
 
 if multidata == 1:
+<<<<<<< HEAD
     f = open(r'%s' % (infile), 'r')
     record = f.read()
     f.close()
@@ -1198,6 +1208,20 @@ if multidata == 1:
     if analysis_mode == 1: indelExtraction(handle) ### INDEL REGION MODULE ###
     elif analysis_mode == 2: conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
 
+=======
+	f = open(r'%s' % (infile), 'r')
+	record = f.read()
+	handle = parseFasta(record)
+	f.close()
+	if checkSeqType(handle)=='Cannot determine':
+    	#User have to specify the sequence type themselves
+		warnings.warn("Specify sequence type!")
+	if checkMultipleSeq(handle)=='Single alignment':
+		#User have to input multiple alignment sequence
+		warnings.warn("Single alignment detected")
+	if analysis_mode == 1: indelExtraction(handle) ### INDEL REGION MODULE ###
+	elif analysis_mode == 2: conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
+>>>>>>> bf7d4f71946158b90d9faedb4489ab64bae605b0
 elif multidata == 2:
 	f = open(r'%s' % (infile), 'r')
 	records = f.read().split('==seq==')
@@ -1208,7 +1232,13 @@ elif multidata == 2:
 		filename = a[0]
 		print (filename)
 		handle = parseFasta(a[1])
+<<<<<<< HEAD
 		if checkReadiness(handle)==False: warnings.warn("Something is wrong!")
+=======
+		if checkSeqType(handle)=='Cannot determine':
+        	#User have to specify the sequence type themselves
+			warnings.warn("Specify sequence type!")
+>>>>>>> bf7d4f71946158b90d9faedb4489ab64bae605b0
 
 		if output_mode == 1 or output_mode == 3:
 			print ('==seq==%s==fire==' % filename)
