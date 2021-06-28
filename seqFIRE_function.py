@@ -42,6 +42,41 @@ fuse = 4
 multidata = 1
 output_mode = 2
 
+def setParameter(input_analysis_mode = 1, 
+				input_similarity_threshold = 75.0,
+				input_percent_similarity = 75.0,
+				input_percent_accept_gap = 40.0,
+				input_p_matrix = 'NONE',
+				input_p_matrix_2 = 'NONE',
+				input_inter_indels = 3,
+				input_twilight = 'True',
+				input_partial = 'True',
+				input_blocks = 3,
+				input_strick_combination = 'False',
+				input_combine_with_indel = 'False',
+				input_fuse = 4,
+				input_multidata = 1,
+				input_output_mode = 2):
+    global analysis_mode, similarity_threshold, percent_similarity,\
+            percent_accept_gap, p_matrix, p_matrix_2, inter_indels, twilight,\
+            parital, blocks, strick_combination, combine_with_indel,\
+            fuse, multidata, output_mode
+    analysis_mode = input_analysis_mode
+    similarity_threshold = input_similarity_threshold
+    percent_similarity = input_percent_similarity
+    percent_accept_gap = input_percent_accept_gap
+    p_matrix = input_p_matrix
+    p_matrix_2 = input_p_matrix_2
+    inter_indels = input_inter_indels
+    twilight = input_twilight
+    partial = input_partial
+    blocks = input_partial
+    strick_combination = input_strick_combination
+    combine_with_indel = input_combine_with_indel
+    fuse = input_fuse
+    multidata = input_multidata
+    output_mode = input_output_mode
+    
 def usage():
 	text="""
 SeqFIRE: Sequence Feature and Indl Region Extractor
@@ -529,21 +564,16 @@ def getIndelCharacter(output_indel_2, simple_indel_positions, indel_positions):
 
 def indelExtraction(handle):
 	pseudoalignments = genPseudoalignment(handle)
-	print("Pseudo alignments:")
-	for onepalign in pseudoalignments:
-    		print(onepalign)
 	conserved_block_profile = getConservedBlockProfile(pseudoalignments)
-	print("Conserved block profile:\n",conserved_block_profile)
 	indel_profile = getIndelProfile(conserved_block_profile)
-	print("Indel profile:\n",indel_profile)
 	indel_positions = getIndelPositions(indel_profile)
-	print("Indel positions:\n",indel_positions)
 	ruler = getRuler(len(handle[0][0]), len(handle[0][1]))
 
 	######################
 	##  OUTPUT Section  ##
 	######################
 
+	returnText = ''
 	if partial == 'True':
 		output_indel_1 = genIndelAlignment(pseudoalignments, indel_profile, ruler, indel_positions)
 		#output_indel_4 = genHomologAlignment(pseudoalignments, indel_profile, ruler, indel_positions)
@@ -565,13 +595,16 @@ def indelExtraction(handle):
 	filename = os.path.basename(infile).split('.')
 
 	if output_mode == 1 or output_mode == 3:
-		for out1 in output_indel_1: print (out1)
+		for out1 in output_indel_1: print (out1); returnText = returnText + out1 + '\n'
 		print ('\n---SeqFIRE---\n')
-		for out2 in output_indel_2: print (out2)
+		returnText = returnText + '\n---SeqFIRE---\n\n'
+		for out2 in output_indel_2: print (out2); returnText = returnText + out2 + '\n'
 		print ('\n---SeqFIRE---\n')
-		for out3 in output_indel_3: print (out3)
+		returnText = returnText + '\n---SeqFIRE---\n\n'
+		for out3 in output_indel_3: print (out3); returnText = returnText + out3 + '\n'
 		print ('\n---SeqFIRE---\n')
-		for out4 in output_indel_4: print (out4)
+		returnText = returnText + '\n---SeqFIRE---\n\n'
+		for out4 in output_indel_4: print (out4); returnText = returnText + out4 + '\n'
 	if output_mode == 2 or output_mode == 3:
 		### Writing output1: Alignment with Indel Mask
 		f1 = open(r'%s.txt' % (filename[0]), 'w')
@@ -597,6 +630,8 @@ def indelExtraction(handle):
 		f4 = open(r'%s.nex' % (filename[0]), 'w')
 		for out4 in output_indel_4: f4.write('\n' + str(out4))		
 		f4.close()
+
+	return returnText
 
 #########################################################################
 ######                                                             ######
@@ -957,18 +992,23 @@ def conservedBlockExtraction(handle):
 	##  OUTPUT Section  ##
 	######################
 
+	returnText = ''
 	filename = os.path.basename(infile).split('.')
 
 	if output_mode == 1 or output_mode == 3:
-		for out1 in output_conserved_1: print (out1)
+		for out1 in output_conserved_1: print (out1); returnText = returnText + out1 + '\n'
 		print ('\n---SeqFIRE---\n')
-		for out2 in output_conserved_2: print (out2)
+		returnText = returnText + '\n---SeqFIRE---\n\n'
+		for out2 in output_conserved_2: print (out2); returnText = returnText + out2 + '\n'
 		print ('\n---SeqFIRE---\n')
-		for out3 in output_conserved_3: print (out3)
+		returnText = returnText + '\n---SeqFIRE---\n\n'
+		for out3 in output_conserved_3: print (out3); returnText = returnText + out3 + '\n'
 		print ('\n---SeqFIRE---\n')
-		for out4 in output_conserved_4: print (out4)
+		returnText = returnText + '\n---SeqFIRE---\n\n'
+		for out4 in output_conserved_4: print (out4); returnText = returnText + out4 + '\n'
 		print ('\n---SeqFIRE---\n')
-		for out5 in output_conserved_5: print (out5)
+		returnText = returnText + '\n---SeqFIRE---\n\n'
+		for out5 in output_conserved_5: print (out5); returnText = returnText + out5 + '\n'
 	if output_mode == 2 or output_mode == 3:
 		### Writing output1: Alignment with Indel Mask
 		f1 = open(r'%s.txt' % (filename[0]), 'w')
@@ -993,6 +1033,8 @@ def conservedBlockExtraction(handle):
 		f5 = open(r'%s_2_short.nex' % (filename[0]), 'w')
 		for out5 in output_conserved_5: f5.write('\n' + str(out5))
 		f5.close()
+
+	return returnText
 
 #########################################################################
 ######                                                             ######
@@ -1022,18 +1064,21 @@ Input for these functions is "seqList"
 Input: seqList and user selected sequence (selectedType)
 Output: True if no error occurred, error list otherwise 
 
-A sequence is neither DNA nor amino acid sequence when
-	1. The sequence consists of "J", "O", "U"
+A sequence is not both DNA and amino acid sequence when
+	1. The sequence consists of "J", "O", "U", "Z"
 A sequence predicted as either DNA or amino acid sequence otherwise
 
 Some letter in the sequence is extracted into 2 groups
-	1. notDNA group: "E", "F", "I", "L", "P", "Q", "X", "Z"
+	1. notDNA group: "E", "F", "I", "L", "P", "Q", "X"
+	2. notProtein group: "B"
 
 The sequence is then classified with this criteria:
-	1. If the sequence consists of any letter from notDNA group -> Protein
-	2. If the sequence NOT consists of notDNA group
+	1. If the sequence consists of both notDNA and notProtein group -> Cannot determine
+	2. If the sequence NOT consists of both notDNA and notProtein group
 		If at least 90% of the sequence is "A", "T", "C", "G" -> DNA
 		Otherwise -> Protein
+	3. If the sequence only consists of notDNA group -> Protein
+	4. If the sequence only consists of notProtein group -> DNA
 
 The predicted sequence type (Verdict) is checked with user's selected sequence type
 	Error will be raised when the verdict and selected sequence type does not match
@@ -1042,8 +1087,8 @@ def checkSeqType(seqList,selectedType):
     verdict = ""
     errormsg = []
     for oneSeq in seqList:
-        letter_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0, 'K': 0, 'L': 0, 'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, '-': 0, '.': 0}
-        #Exclude J, O, U
+        letter_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0,'K': 0, 'L': 0, 'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, '-': 0, '.': 0}
+        #Exclude J, O, U, Z
         for oneLetter in oneSeq[1]:
             try:
                 letter_dict[oneLetter] = letter_dict[oneLetter] + 1
@@ -1052,16 +1097,22 @@ def checkSeqType(seqList,selectedType):
                 break
 
         #Making prediction whether the sequence is DNA or RNA
-        notDNAScore = letter_dict['E']+letter_dict['F']+letter_dict['I']+letter_dict['L']+letter_dict['P']+letter_dict['Q']+letter_dict['X']+letter_dict['Z']
-		if notDNAScore!=0:
-    			verdict='Protein'
-		else:
+        notDNAScore = letter_dict['E']+letter_dict['F']+letter_dict['I']+letter_dict['L']+letter_dict['P']+letter_dict['Q']+letter_dict['X']
+        notProteinScore = letter_dict['B']
+        if notDNAScore==0 and notProteinScore==0:
             DNAScore = letter_dict['A']+letter_dict['T']+letter_dict['C']+letter_dict['G']
             if DNAScore>=0.9*(sum(letter_dict.values())-letter_dict['-']-letter_dict['.']):
                 verdict='DNA'
             else:
                 verdict='Protein'
-				
+        elif notDNAScore>0 and notProteinScore>0:
+            errormsg.append("FATAL ERROR: Detected invalid character in sequence %s" % (oneSeq[0]))
+            continue
+        elif notDNAScore>0:
+            verdict='Protein'
+        elif notProteinScore>0:
+            verdict='DNA'
+
         #Test verdict with selected sequence type
         if verdict=="DNA" and selectedType == "Protein":
             errormsg.append("The sequence %s is detected as DNA" % (oneSeq[0]))
@@ -1147,7 +1198,7 @@ def checkReadiness(seqList, selectedType):
 ######         S e q F I R E ' s   M A I N   P R O G R A M         ######
 ######                                                             ######
 #########################################################################
-
+'''
 if sys.argv[1:]==[]:
 	usage()
 	sys.exit(2)
@@ -1181,46 +1232,71 @@ for opt, arg in opts:
 	if opt == "-e": combine_with_indel = str(arg)
 	if opt == "-m": multidata = int(arg)
 	if opt == "-o": output_mode = int(arg)
+'''
 
 ###################################
 ##   A N A L Y S I S   Z O N E   ##
 ###################################
 
-if multidata == 1:
-    f = open(r'%s' % (infile), 'r')
-    record = f.read()
-    f.close()
-    if checkSeqFormat(record):
-	    handle = parseFasta(record)
-    else:
-        raise Exception("FATAL ERROR: The input is not in FASTA format")
-    readinessResult = checkReadiness(handle,'Protein')
-    if readinessResult[0]!=True:
-        if readinessResult[0]=='Fatal error':
-            raise Exception(readinessResult[1])
-        else:
-            warnings.warn(readinessResult[1])
-    if analysis_mode == 1: indelExtraction(handle) ### INDEL REGION MODULE ###
-    elif analysis_mode == 2: conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
-
-elif multidata == 2:
-	f = open(r'%s' % (infile), 'r')
-	records = f.read().split('==seq==')
-	f.close()
-	del records[0]
-	for record in records:
-		a = record.split('==fire==')
-		filename = a[0]
-		print (filename)
-		handle = parseFasta(a[1])
-		if checkReadiness(handle)==False: warnings.warn("Something is wrong!")
-
-		if output_mode == 1 or output_mode == 3:
-			print ('==seq==%s==fire==' % filename)
-		elif output_mode == 2 or output_mode == 3:
-			f = open(r'outfile.txt', 'a')
-			f.write('\n==seq==%s==fire==\n' % filename)
+def startAnalysis(analysis_mode = 1, 
+				similarity_threshold = 75.0,
+				percent_similarity = 75.0,
+				percent_accept_gap = 40.0,
+				p_matrix = 'NONE',
+				p_matrix_2 = 'NONE',
+				inter_indels = 3,
+				twilight = 'True',
+				partial = 'True',
+				blocks = 3,
+				strick_combination = 'False',
+				combine_with_indel = 'False',
+				fuse = 4,
+				multidata = 1,
+				output_mode = 2,
+				fileMode = False,
+				inputSeq = "",
+				infile = 'infile', ):
+	setParameter(analysis_mode, similarity_threshold, percent_similarity, percent_accept_gap, p_matrix,
+				p_matrix_2, inter_indels, twilight, partial, blocks, strick_combination, combine_with_indel,
+				fuse, multidata, output_mode)
+	if multidata == 1:
+		if fileMode:
+			f = open(r'%s' % (infile), 'r')
+			record = f.read()
 			f.close()
+		else:
+			record = inputSeq
+		if checkSeqFormat(record):
+			handle = parseFasta(record)
+		else:
+			raise Exception("FATAL ERROR: The input is not in FASTA format")
+		readinessResult = checkReadiness(handle,'Protein')
+		if readinessResult[0]!=True:
+			if readinessResult[0]=='Fatal error':
+				raise Exception(readinessResult[1])
+			else:
+				warnings.warn(readinessResult[1])
+		if analysis_mode == 1: return indelExtraction(handle) ### INDEL REGION MODULE ###
+		elif analysis_mode == 2: return conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
 
-		if analysis_mode == 1: indelExtraction(handle) ### INDEL REGION MODULE ###
-		elif analysis_mode == 2: conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
+	elif multidata == 2:
+		f = open(r'%s' % (infile), 'r')
+		records = f.read().split('==seq==')
+		f.close()
+		del records[0]
+		for record in records:
+			a = record.split('==fire==')
+			filename = a[0]
+			print (filename)
+			handle = parseFasta(a[1])
+			if checkReadiness(handle)==False: warnings.warn("Something is wrong!")
+
+			if output_mode == 1 or output_mode == 3:
+				print ('==seq==%s==fire==' % filename)
+			elif output_mode == 2 or output_mode == 3:
+				f = open(r'outfile.txt', 'a')
+				f.write('\n==seq==%s==fire==\n' % filename)
+				f.close()
+
+			if analysis_mode == 1: return indelExtraction(handle) ### INDEL REGION MODULE ###
+			elif analysis_mode == 2: return conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###

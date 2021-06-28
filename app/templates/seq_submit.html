@@ -1,23 +1,11 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block content %}
+{% block app_content %}
     <h1>Sign In</h1>
-    <form action="" method="post" enctype="multipart/form-data" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.copypaste_sequence.label}}<br>
-            {{ form.copypaste_sequence(size=200,style="width:500px; height:300px;") }}<br>
-            {% for error in form.copypaste_sequence.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.file_sequence.label }}<br>
-            {{ form.file_sequence() }}<br>
-            {% for error in form.file_sequence.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <div class='row'></div>
+        <div class = 'container-fluid'>
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
 {% endblock %}
