@@ -177,7 +177,7 @@ def getGapProfile(seq_lists):
 			gap_profile = gap_profile + '-'
 		else:
 			gap_profile = gap_profile + 'X'
-	print("Gap profiling complete:\n",gap_profile)
+	#print("Gap profiling complete:\n",gap_profile)
 	return gap_profile
 
 #########################################################################
@@ -209,7 +209,7 @@ def genMaskRef(seq_lists, position):
 		count = 0
 		for seq_list in seq_lists:
 			if not seq_list[1][i] == '-': count += 1
-		if float(count)//float(len(seq_lists))*100.0 >= 55.0: ref = ref + '?'
+		if float(count)/float(len(seq_lists))*100.0 >= 55.0: ref = ref + '?'
 		else: ref = ref + '-'
 	return ref
 
@@ -301,7 +301,7 @@ def getSimilarityScore(aa):
 		for a in aa:
 			aa_dict[a] = aa_dict[a] + 1
 		k = max(aa_dict, key=aa_dict.get)
-		similarity = (float(aa_dict[k]) * 100.0) // float(len(aa))
+		similarity = (float(aa_dict[k]) * 100.0) / float(len(aa))
 		if twilight == 'True':
 			if similarity >= 30.0: return 'C'
 			else: return '.'
@@ -318,7 +318,7 @@ def getSimilarityScore(aa):
 		for aa_sets in pMatrix:
 			m = 0
 			for aa_set in aa_sets: m = m + int(aa_dict[aa_set])
-			c.append((float(m)*100.0)//float(len(aa)))
+			c.append((float(m)*100.0)/float(len(aa)))
 		similarity = max(c)
 		if twilight == 'True':
 			if similarity >= 30.0: return 'C'
@@ -649,21 +649,21 @@ def getListOfSimilarityScores(handle):
 			aa_dict[seq_list[1][i]] += 1
 
 		if p_matrix_2 == 'NONE':
-			if (float(aa_dict['-']) * 100.0) // float(len(handle)) >= percent_accept_gap:
+			if (float(aa_dict['-']) * 100.0) / float(len(handle)) >= percent_accept_gap:
 				similarityList.append('-')
 			else:
 				k = max(aa_dict, key=aa_dict.get)
 				similarityList.append((float(aa_dict[k]) * 100.0) / float(len(handle)))
 		else:
 			pMatrix = pMatrices[p_matrix_2]
-			if (float(aa_dict['-']) * 100.0) // float(len(handle)) >= percent_accept_gap:
+			if (float(aa_dict['-']) * 100.0) / float(len(handle)) >= percent_accept_gap:
 				similarityList.append('-')
 			else:
 				c = []
 				for aa_sets in pMatrix:
 					m = 0
 					for aa_set in aa_sets: m = m + int(aa_dict[aa_set])
-					c.append((float(m)*100.0)//float(len(handle)))
+					c.append((float(m)*100.0)/float(len(handle)))
 				similarityList.append(max(c))
 	return similarityList
 		
@@ -736,7 +736,7 @@ def getMedian(numericValues):
 	else:
 		lower = theValues[len(theValues)//2-1]
 		upper = theValues[len(theValues)//2]
-	return (float(lower + upper)) // 2  
+	return (float(lower + upper)) / 2  
 
 def getEntropyProfile(entropy_list):
 	datalists = []
@@ -1049,11 +1049,24 @@ def checkSeqFormat(inputText):
     if splitInput[0]!='':
         return False
     del splitInput[0]
-    print(splitInput)
+    #print(splitInput)
     for oneInput in splitInput:
         if oneInput!=oneInput.strip(' '):
             return False
     return True
+    
+	#This function check whether the input has been prepared by seqFIREprep
+def checkPrepped(inputText):
+	if '==seq==' not in inputText:
+		return False
+	splitInput = inputText.split('==seq==')
+	if splitInput[0]!='':
+		return False
+	del splitInput[0]
+	for oneInput in splitInput:
+		if checkSeqFormat(oneInput)==False:
+			return False
+	return True
     
 ''' 
 Input for these functions is "seqList"
@@ -1087,7 +1100,7 @@ def checkSeqType(seqList,selectedType):
     verdict = ""
     errormsg = []
     for oneSeq in seqList:
-        letter_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0,'K': 0, 'L': 0, 'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, '-': 0, '.': 0}
+        letter_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0,'K': 0, 'L': 0, 'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, '-': 0, '?': 0}
         #Exclude J, O, U, Z
         for oneLetter in oneSeq[1]:
             try:
@@ -1101,7 +1114,7 @@ def checkSeqType(seqList,selectedType):
         notProteinScore = letter_dict['B']
         if notDNAScore==0 and notProteinScore==0:
             DNAScore = letter_dict['A']+letter_dict['T']+letter_dict['C']+letter_dict['G']
-            if DNAScore>=0.9*(sum(letter_dict.values())-letter_dict['-']-letter_dict['.']):
+            if DNAScore>=0.9*(sum(letter_dict.values())-letter_dict['-']-letter_dict['?']):
                 verdict='DNA'
             else:
                 verdict='Protein'
@@ -1126,9 +1139,14 @@ Input: seqList
 Output: True if seqList is MSA, False otherwise
 
 A sequence is MSA when the length of seqList is more than or equal to 2
+All sequences must have the same length, or it will not be a valid MSA
 '''
 def checkMultipleSeq(seqList):
     if len(seqList)>=2:
+        seqLength = len(seqList[0][1])
+        for oneSeq in seqList:
+            if len(oneSeq[1])!=seqLength:
+                return "FATAL ERROR: Inequal sequence length detected"
         return True
     else:
         return "FATAL ERROR: Single alignment detected"
@@ -1139,33 +1157,26 @@ Input: seqList
 Output: True if the quality of MSA is valid, error list otherwise
 
 Validity of a sequence is evaluated from 2 criteria: Row validity and Column validity
-    1. Row validity - A sequence with CONTINUOUS GAP of at least 40% length compared to the whole sequence will be considered invalid
-    2. Column validity - An alignment with less than 3 flanking sequence for each gap will be considered invalid
+    1. Row validity - A sequence with at least 40% CONTINUOUS GAP at head or tail will be considered invalid
 '''
 def checkMSAQuality(seqList):
     errormsg = []
-	#No more than 40% continuous gap in each row
     for oneSeq in seqList:
-        maxContinuousGap = 0
-        continuousGap = 0
-        for oneLetter in oneSeq[1]:
-            if oneLetter=='.':
-                continuousGap = continuousGap+1
-            else:
-                if continuousGap>maxContinuousGap:
-                    maxContinuousGap=continuousGap
-                continuousGap=0
-        if maxContinuousGap>=0.4*len(oneSeq[1]):
-            errormsg.append('The sequence %s has at least 40% continuous gap' % oneSeq[0])
-    #Column with pure gap must be flanked by at least 3 non-gap
-    for oneIndex in range(len(seqList[0][1])):
-        gapCount = 0
-        for oneSeq in seqList:
-            if oneSeq[1][oneIndex]=='.': gapCount = gapCount + 1
-        if gapCount==len(seqList):
-            errormsg.append("At index %d, all sequence has gap" % oneIndex+1)
-    return errormsg if errormsg else True
-
+        if oneSeq[1][0]=='-':
+            headGap = 0
+            for oneLetter in oneSeq[1]:
+                if oneLetter=='-':
+                    headGap = headGap+1
+                else: break
+        if oneSeq[1][-1]=='-':
+            tailGap = 0
+            for oneLetter in oneSeq[1][::-1]:
+                if oneLetter=='-':
+                    tailGap = tailGap+1
+                else: break
+        biggestGap = headGap if headGap>tailGap else tailGap
+        if biggestGap>=0.4*len(oneSeq[1]):
+            errormsg.append('The sequence %s has at least 40% continuous gap at head or tail' % oneSeq[0])
 #This function combines all 4 checking functions into one
 '''
 Input: seqList
@@ -1193,46 +1204,7 @@ def checkReadiness(seqList, selectedType):
     else:
         return (True,)
 
-#########################################################################
-######                                                             ######
-######         S e q F I R E ' s   M A I N   P R O G R A M         ######
-######                                                             ######
-#########################################################################
-'''
-if sys.argv[1:]==[]:
-	usage()
-	sys.exit(2)
 
-try:                                
-	opts, args = getopt.getopt(sys.argv[1:], "h:i:a:c:d:j:g:k:b:t:p:s:f:r:e:m:o:")
-
-except (getopt.GetoptError):
-	print("Invalid arguments")
-	#usage()                          
-	sys.exit(2)
-
-
-for opt, arg in opts:                
-	if opt == "-h":
-		usage()
-		sys.exit()
-	if opt == "-i": infile = arg
-	if opt == "-a": analysis_mode = int(arg)
-	if opt == "-c": similarity_threshold = float(arg)
-	if opt == "-d": percent_similarity = float(arg)
-	if opt == "-j": percent_accept_gap = float(arg)
-	if opt == "-g": p_matrix = arg
-	if opt == "-k": p_matrix_2 = arg
-	if opt == "-b": inter_indels = int(arg)
-	if opt == "-t": twilight = str(arg)
-	if opt == "-p": partial = str(arg)
-	if opt == "-s": blocks = int(arg)
-	if opt == "-f": fuse = int(arg)
-	if opt == "-r": strick_combination = str(arg)
-	if opt == "-e": combine_with_indel = str(arg)
-	if opt == "-m": multidata = int(arg)
-	if opt == "-o": output_mode = int(arg)
-'''
 
 ###################################
 ##   A N A L Y S I S   Z O N E   ##
