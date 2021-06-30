@@ -142,7 +142,7 @@ def getGapProfile(seq_lists):
 			gap_profile = gap_profile + '-'
 		else:
 			gap_profile = gap_profile + 'X'
-	print("Gap profiling complete:\n",gap_profile)
+	#print("Gap profiling complete:\n",gap_profile)
 	return gap_profile
 
 #########################################################################
@@ -155,7 +155,7 @@ def getBodyAlignmentIndexes(seq_lists):
 	gap_profile = getGapProfile(seq_lists)
 	ind_n = gap_profile.find('XXXXX')					# Search for N-terminal edge of alignment body
 	ind_reverse_c = gap_profile[::-1].find('XXXXX')		# Search for C-terminal edge of alignment body
-	ind_c = len(gap_profile) - ind_reverse_c - 1  
+	ind_c = len(gap_profile) - ind_reverse_c - 1
 	return [ind_n, ind_c]
 
 def getBodyOfAlignment(ind, seq_lists):
@@ -174,7 +174,7 @@ def genMaskRef(seq_lists, position):
 		count = 0
 		for seq_list in seq_lists:
 			if not seq_list[1][i] == '-': count += 1
-		if float(count)//float(len(seq_lists))*100.0 >= 55.0: ref = ref + '?'
+		if float(count)/float(len(seq_lists))*100.0 >= 55.0: ref = ref + '?'
 		else: ref = ref + '-'
 	return ref
 
@@ -266,7 +266,7 @@ def getSimilarityScore(aa):
 		for a in aa:
 			aa_dict[a] = aa_dict[a] + 1
 		k = max(aa_dict, key=aa_dict.get)
-		similarity = (float(aa_dict[k]) * 100.0) // float(len(aa))
+		similarity = (float(aa_dict[k]) * 100.0) / float(len(aa))
 		if twilight == 'True':
 			if similarity >= 30.0: return 'C'
 			else: return '.'
@@ -283,7 +283,7 @@ def getSimilarityScore(aa):
 		for aa_sets in pMatrix:
 			m = 0
 			for aa_set in aa_sets: m = m + int(aa_dict[aa_set])
-			c.append((float(m)*100.0)//float(len(aa)))
+			c.append((float(m)*100.0)/float(len(aa)))
 		similarity = max(c)
 		if twilight == 'True':
 			if similarity >= 30.0: return 'C'
@@ -529,15 +529,15 @@ def getIndelCharacter(output_indel_2, simple_indel_positions, indel_positions):
 
 def indelExtraction(handle):
 	pseudoalignments = genPseudoalignment(handle)
-	print("Pseudo alignments:")
-	for onepalign in pseudoalignments:
-    		print(onepalign)
+	#print("Pseudo alignments:")
+	#for onepalign in pseudoalignments:
+    #		print(onepalign)
 	conserved_block_profile = getConservedBlockProfile(pseudoalignments)
-	print("Conserved block profile:\n",conserved_block_profile)
+	#print("Conserved block profile:\n",conserved_block_profile)
 	indel_profile = getIndelProfile(conserved_block_profile)
-	print("Indel profile:\n",indel_profile)
+	#print("Indel profile:\n",indel_profile)
 	indel_positions = getIndelPositions(indel_profile)
-	print("Indel positions:\n",indel_positions)
+	#print("Indel positions:\n",indel_positions)
 	ruler = getRuler(len(handle[0][0]), len(handle[0][1]))
 
 	######################
@@ -614,21 +614,21 @@ def getListOfSimilarityScores(handle):
 			aa_dict[seq_list[1][i]] += 1
 
 		if p_matrix_2 == 'NONE':
-			if (float(aa_dict['-']) * 100.0) // float(len(handle)) >= percent_accept_gap:
+			if (float(aa_dict['-']) * 100.0) / float(len(handle)) >= percent_accept_gap:
 				similarityList.append('-')
 			else:
 				k = max(aa_dict, key=aa_dict.get)
 				similarityList.append((float(aa_dict[k]) * 100.0) / float(len(handle)))
 		else:
 			pMatrix = pMatrices[p_matrix_2]
-			if (float(aa_dict['-']) * 100.0) // float(len(handle)) >= percent_accept_gap:
+			if (float(aa_dict['-']) * 100.0) / float(len(handle)) >= percent_accept_gap:
 				similarityList.append('-')
 			else:
 				c = []
 				for aa_sets in pMatrix:
 					m = 0
 					for aa_set in aa_sets: m = m + int(aa_dict[aa_set])
-					c.append((float(m)*100.0)//float(len(handle)))
+					c.append((float(m)*100.0)/float(len(handle)))
 				similarityList.append(max(c))
 	return similarityList
 		
@@ -701,7 +701,7 @@ def getMedian(numericValues):
 	else:
 		lower = theValues[len(theValues)//2-1]
 		upper = theValues[len(theValues)//2]
-	return (float(lower + upper)) // 2  
+	return (float(lower + upper)) / 2  
 
 def getEntropyProfile(entropy_list):
 	datalists = []
@@ -836,8 +836,8 @@ def genNexusWithConservedProfile(handle, conserved_blocks, simple_indel_position
  		    \tFORMAT MISSING=? DATATYPE=PROTEIN GAP=- EQUATE="0=K 1=D";
  		    \tOPTIONS GAPMODE=MISSING;
 			 
-			 MATRIX''' % (len(handle),len(handle[0][1]))
 
+			 MATRIX''' % (len(handle),len(handle[0][1]))
 	output_conserved_4.append(head)
 
 	r = getRuler(len(handle[0][0]), len(handle[0][1])).split('\n')
@@ -1007,33 +1007,49 @@ def checkSeqFormat(inputText):
     if splitInput[0]!='':
         return False
     del splitInput[0]
-    print(splitInput)
     for oneInput in splitInput:
         if oneInput!=oneInput.strip(' '):
             return False
     return True
+
+#This function check whether the input has been prepared by seqFIREprep
+def checkPrepped(inputText):
+	if '==seq==' not in inputText:
+		return False
+	splitInput = inputText.split('==seq==')
+	if splitInput[0]!='':
+		return False
+	del splitInput[0]
+	for oneInput in splitInput:
+		if checkSeqFormat(oneInput)==False:
+			return False
+	return True
     
 ''' 
 Input for these functions is "seqList"
 [[<Sequence name 1>,<Sequence 1>], [<Sequence name 2>,<Sequence 2>], ...]
 '''
+
 #This function check whether each input sequence is DNA or amino acid sequence
 '''
 Input: seqList and user selected sequence (selectedType)
 Output: True if no error occurred, error list otherwise 
 
-A sequence is neither DNA nor amino acid sequence when
-	1. The sequence consists of "J", "O", "U"
+A sequence is not both DNA and amino acid sequence when
+	1. The sequence consists of "J", "O", "U", "Z"
 A sequence predicted as either DNA or amino acid sequence otherwise
 
 Some letter in the sequence is extracted into 2 groups
-	1. notDNA group: "E", "F", "I", "L", "P", "Q", "X", "Z"
+	1. notDNA group: "E", "F", "I", "L", "P", "Q", "X"
+	2. notProtein group: "B"
 
 The sequence is then classified with this criteria:
-	1. If the sequence consists of any letter from notDNA group -> Protein
-	2. If the sequence NOT consists of notDNA group
+	1. If the sequence consists of both notDNA and notProtein group -> Cannot determine
+	2. If the sequence NOT consists of both notDNA and notProtein group
 		If at least 90% of the sequence is "A", "T", "C", "G" -> DNA
 		Otherwise -> Protein
+	3. If the sequence only consists of notDNA group -> Protein
+	4. If the sequence only consists of notProtein group -> DNA
 
 The predicted sequence type (Verdict) is checked with user's selected sequence type
 	Error will be raised when the verdict and selected sequence type does not match
@@ -1042,8 +1058,8 @@ def checkSeqType(seqList,selectedType):
     verdict = ""
     errormsg = []
     for oneSeq in seqList:
-        letter_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0, 'K': 0, 'L': 0, 'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, '-': 0, '.': 0}
-        #Exclude J, O, U
+        letter_dict = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0,'K': 0, 'L': 0, 'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, '-': 0, '?': 0}
+        #Exclude J, O, U, Z
         for oneLetter in oneSeq[1]:
             try:
                 letter_dict[oneLetter] = letter_dict[oneLetter] + 1
@@ -1052,16 +1068,22 @@ def checkSeqType(seqList,selectedType):
                 break
 
         #Making prediction whether the sequence is DNA or RNA
-        notDNAScore = letter_dict['E']+letter_dict['F']+letter_dict['I']+letter_dict['L']+letter_dict['P']+letter_dict['Q']+letter_dict['X']+letter_dict['Z']
-		if notDNAScore!=0:
-    			verdict='Protein'
-		else:
+        notDNAScore = letter_dict['E']+letter_dict['F']+letter_dict['I']+letter_dict['L']+letter_dict['P']+letter_dict['Q']+letter_dict['X']
+        notProteinScore = letter_dict['B']
+        if notDNAScore==0 and notProteinScore==0:
             DNAScore = letter_dict['A']+letter_dict['T']+letter_dict['C']+letter_dict['G']
-            if DNAScore>=0.9*(sum(letter_dict.values())-letter_dict['-']-letter_dict['.']):
+            if DNAScore>=0.9*(sum(letter_dict.values())-letter_dict['-']-letter_dict['?']):
                 verdict='DNA'
             else:
                 verdict='Protein'
-				
+        elif notDNAScore>0 and notProteinScore>0:
+            errormsg.append("FATAL ERROR: Detected invalid character in sequence %s" % (oneSeq[0]))
+            continue
+        elif notDNAScore>0:
+            verdict='Protein'
+        elif notProteinScore>0:
+            verdict='DNA'
+
         #Test verdict with selected sequence type
         if verdict=="DNA" and selectedType == "Protein":
             errormsg.append("The sequence %s is detected as DNA" % (oneSeq[0]))
@@ -1075,9 +1097,14 @@ Input: seqList
 Output: True if seqList is MSA, False otherwise
 
 A sequence is MSA when the length of seqList is more than or equal to 2
+All sequences must have the same length, or it will not be a valid MSA
 '''
 def checkMultipleSeq(seqList):
     if len(seqList)>=2:
+        seqLength = len(seqList[0][1])
+        for oneSeq in seqList:
+            if len(oneSeq[1])!=seqLength:
+                return "FATAL ERROR: Inequal sequence length detected"
         return True
     else:
         return "FATAL ERROR: Single alignment detected"
@@ -1088,32 +1115,26 @@ Input: seqList
 Output: True if the quality of MSA is valid, error list otherwise
 
 Validity of a sequence is evaluated from 2 criteria: Row validity and Column validity
-    1. Row validity - A sequence with CONTINUOUS GAP of at least 40% length compared to the whole sequence will be considered invalid
-    2. Column validity - An alignment with less than 3 flanking sequence for each gap will be considered invalid
+    1. Row validity - A sequence with at least 40% CONTINUOUS GAP at head or tail will be considered invalid
 '''
 def checkMSAQuality(seqList):
     errormsg = []
-	#No more than 40% continuous gap in each row
     for oneSeq in seqList:
-        maxContinuousGap = 0
-        continuousGap = 0
-        for oneLetter in oneSeq[1]:
-            if oneLetter=='.':
-                continuousGap = continuousGap+1
-            else:
-                if continuousGap>maxContinuousGap:
-                    maxContinuousGap=continuousGap
-                continuousGap=0
-        if maxContinuousGap>=0.4*len(oneSeq[1]):
-            errormsg.append('The sequence %s has at least 40% continuous gap' % oneSeq[0])
-    #Column with pure gap must be flanked by at least 3 non-gap
-    for oneIndex in range(len(seqList[0][1])):
-        gapCount = 0
-        for oneSeq in seqList:
-            if oneSeq[1][oneIndex]=='.': gapCount = gapCount + 1
-        if gapCount==len(seqList):
-            errormsg.append("At index %d, all sequence has gap" % oneIndex+1)
-    return errormsg if errormsg else True
+        if oneSeq[1][0]=='-':
+            headGap = 0
+            for oneLetter in oneSeq[1]:
+                if oneLetter=='-':
+                    headGap = headGap+1
+                else: break
+        if oneSeq[1][-1]=='-':
+            tailGap = 0
+            for oneLetter in oneSeq[1][::-1]:
+                if oneLetter=='-':
+                    tailGap = tailGap+1
+                else: break
+        biggestGap = headGap if headGap>tailGap else tailGap
+        if biggestGap>=0.4*len(oneSeq[1]):
+            errormsg.append('The sequence %s has at least 40% continuous gap at head or tail' % oneSeq[0])
 
 #This function combines all 4 checking functions into one
 '''
