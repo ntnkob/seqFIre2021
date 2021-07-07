@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block app_content %}
+{% block content %}
 <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-6">
         <h1><p class = "text-center">
-            <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">Indel module<br><small>Find your indel</small></a>
+            <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">Indel region module<br><small>Find your indel region</small></a>
         </p></h1>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-6">
         <h1><p class = "text-center">
-            <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 0) }}">Conservation block module<br><small>Find your conservation block</small></a>
+            <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 0) }}">Conserved block module<br><small>Find your conserved block</small></a>
         </p></h1>
     </div>
   </div>

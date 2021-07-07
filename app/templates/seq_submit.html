@@ -1,11 +1,34 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
-{% block app_content %}
-    <h1>Sign In</h1>
-    <div class='row'></div>
-        <div class = 'container-fluid'>
-            {{ wtf.quick_form(form) }}
-        </div>
-    </div>
+{% block styles %}
+    {{ super() }}
+    <style> 
+        #panel {
+          padding: 50px;
+          text-align: center;
+          background-color: #e5eecc;
+          border: solid 1px #c3c3c3;
+          display: none;
+        }
+        
+    </style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ module_name }}<br></h1>
+<div class ='container-fluid'>
+    <h2 id='inputSection'>Input section<br></h2>
+    {{ wtf.render_form(seq_form, form_type="horizontal") }}
+</div>
+<div class ='container-fluid'>
+    <h2 id='parameterSection'>Parameter selection</h2>
+    {{ wtf.render_form(parameter_form, form_type="horizontal")}}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="/static/seqSubmitFunction.js"></script>
 {% endblock %}
