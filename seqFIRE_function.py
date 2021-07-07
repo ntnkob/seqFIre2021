@@ -59,7 +59,7 @@ def setParameter(input_analysis_mode = 1,
 				input_output_mode = 2):
     global analysis_mode, similarity_threshold, percent_similarity,\
             percent_accept_gap, p_matrix, p_matrix_2, inter_indels, twilight,\
-            parital, blocks, strick_combination, combine_with_indel,\
+            partial, blocks, strick_combination, combine_with_indel,\
             fuse, multidata, output_mode
     analysis_mode = input_analysis_mode
     similarity_threshold = input_similarity_threshold
@@ -70,7 +70,7 @@ def setParameter(input_analysis_mode = 1,
     inter_indels = input_inter_indels
     twilight = input_twilight
     partial = input_partial
-    blocks = input_partial
+    blocks = input_blocks
     strick_combination = input_strick_combination
     combine_with_indel = input_combine_with_indel
     fuse = input_fuse
@@ -1162,14 +1162,14 @@ Validity of a sequence is evaluated from 2 criteria: Row validity and Column val
 def checkMSAQuality(seqList):
     errormsg = []
     for oneSeq in seqList:
+        headGap = 0
+        tailGap = 0
         if oneSeq[1][0]=='-':
-            headGap = 0
             for oneLetter in oneSeq[1]:
                 if oneLetter=='-':
                     headGap = headGap+1
                 else: break
         if oneSeq[1][-1]=='-':
-            tailGap = 0
             for oneLetter in oneSeq[1][::-1]:
                 if oneLetter=='-':
                     tailGap = tailGap+1
@@ -1177,6 +1177,8 @@ def checkMSAQuality(seqList):
         biggestGap = headGap if headGap>tailGap else tailGap
         if biggestGap>=0.4*len(oneSeq[1]):
             errormsg.append('The sequence %s has at least 40% continuous gap at head or tail' % oneSeq[0])
+    return errormsg if errormsg else True
+    
 #This function combines all 4 checking functions into one
 '''
 Input: seqList
