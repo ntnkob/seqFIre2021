@@ -1,6 +1,6 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash
 from app import app
-from app.forms import seqForm, coAnalysisForm, indelForm, conservedBlockForm
+from app.forms import coAnalysisForm, indelForm, conservedBlockForm
 from werkzeug.utils import secure_filename
 import os, seqFIRE_function
 
@@ -32,18 +32,16 @@ def seq_submit(analysis_mode,co_analysis):
         form = coAnalysisForm()
 
     #Render and process the form
-    if form.validate_on_submit():
+    if form.is_submitted():
+        print(form.data)
         #If the data is input in copy-paste format
         if form.copypaste_sequence.data:
             flash("Submitted sequence: {}".format(form.copypaste_sequence.data))
-
         #Else the data will be input in file format
         else:
-            flash("Input from file is under construction")
-            f = form.file_sequence.data
-            filename = secure_filename(f.filename)
-            print(seqFIRE_function.parseFasta(filename))
-            print(filename)
+            filename = secure_filename(form.file_input.data.filename)
+            filecontent = form.file_input.data.read()
+            flash("File-submitted sequence from {}: {}".format(filename, filecontent))
         
         formData = form.data
         analysis_mode = 1 if analysis_mode=='1' else 2
@@ -58,7 +56,7 @@ def seq_submit(analysis_mode,co_analysis):
         strick_combination = form.strick_combination.data if 'strick_combination' in formData else "False"
         combine_with_indel = 'False' if co_analysis == '0' else 'True'
         fuse = form.fuse.data if 'fuse' in formData else 4
-        multidata = form.multiData.data if 'multiData' in formData else 1
+        multidata = 2 if form.multiData.data=='2' in formData else 1
         
         analysis_result = seqFIRE_function.startAnalysis(analysis_mode, similarity_threshold, percent_similarity, 
             percent_accept_gap, p_matrix, p_matrix_2, inter_indels, 'True', partial, blocks, strick_combination, combine_with_indel,
@@ -68,4 +66,5 @@ def seq_submit(analysis_mode,co_analysis):
         print(analysis_result)
 
         return render_template('resultPage.html',analysis_result = analysis_result)
-    return render_template('seq_submit.html', title='Submit your sequence', seq_form = seqForm(), parameter_form = form, module_name = module_name)
+    return render_template('seq_submit.html', title='Submit your sequence', form = form, module_name = module_name)
+

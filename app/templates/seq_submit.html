@@ -4,7 +4,7 @@
 {% block styles %}
     {{ super() }}
     <style> 
-        #panel {
+        .paneltext {
           padding: 50px;
           text-align: center;
           background-color: #e5eecc;
@@ -19,11 +19,7 @@
 <h1>{{ module_name }}<br></h1>
 <div class ='container-fluid'>
     <h2 id='inputSection'>Input section<br></h2>
-    {{ wtf.render_form(seq_form, form_type="horizontal") }}
-</div>
-<div class ='container-fluid'>
-    <h2 id='parameterSection'>Parameter selection</h2>
-    {{ wtf.render_form(parameter_form, form_type="horizontal")}}
+    {{ wtf.render_form(form) }}
 </div>
 
 {% endblock %}

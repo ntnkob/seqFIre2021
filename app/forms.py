@@ -1,14 +1,12 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
-from wtforms.fields import TextAreaField, SubmitField, RadioField, DecimalField, IntegerField, SelectField
+from wtforms.fields import TextAreaField, SubmitField, RadioField, DecimalField, IntegerField, SelectField, BooleanField
 from wtforms.validators import DataRequired, Optional
 
 class seqForm(FlaskForm):
     #Single or batch mode - RadioField -> multidata
     multiData = RadioField("Multiple files",
-                        validators = [DataRequired("An analysis mode is required")],
-                        choices = [(1,'Single mode'),(2,'Batch mode')],
-                        coerce = int)
+                        choices = [(2,'Batch mode')])
 
     copypaste_sequence = TextAreaField("Enter Multiple Sequence Alignment in FASTA format*",
                                     validators=[Optional()],
@@ -22,7 +20,7 @@ class seqForm(FlaskForm):
                         validators = [DataRequired("Specify the input sequence type")],
                         choices = [("dna","DNA"), ("protein","Amino acid"), ("program","Use program-detected sequence type")])
 
-class indelForm(FlaskForm):
+class indelForm(seqForm):
     #similarity_threshold and percent_similarity is the same parameter but for indel and conservation block module respectively
     similarity_threshold = DecimalField("Amino acid conservation threshold",
                                         validators = [DataRequired("Conservation threshold is required (0-100)")],
@@ -45,8 +43,9 @@ class indelForm(FlaskForm):
 
     #Output to file, screen, or both - RadioField -> output_mode  
     submit = SubmitField("FIRE!")
+    newWindow = BooleanField("Show results in a new window")
     
-class conservedBlockForm(FlaskForm):  
+class conservedBlockForm(seqForm):  
     #similarity_threshold and percent_similarity is the same parameter but for indel and conservation block module respectively
     percent_similarity = DecimalField("DNA or amino acid conservation threshold",
                                         validators = [DataRequired("Conservation threshold is required (0-100)")],
@@ -74,8 +73,9 @@ class conservedBlockForm(FlaskForm):
                                             choices = [("False","Union (OR)"),("True", "Intersect (AND)")])
     #Output to file, screen, or both - RadioField -> output_mode  
     submit = SubmitField("FIRE!")
+    newWindow = BooleanField("Show results in a new window")
 
-class coAnalysisForm(FlaskForm):
+class coAnalysisForm(seqForm):
     
     ## This part is from indel region module ##
 
@@ -119,6 +119,7 @@ class coAnalysisForm(FlaskForm):
                                             choices = [("False","Union (OR)"),("True", "Intersect (AND)")])
 
     submit = SubmitField("FIRE!")
+    newWindow = BooleanField("Show results in a new window")
 
 '''
     analysis_mode (taken care of), similarity_threshold, percent_similarity, percent_accept_gap, p_matrix, p_matrix_2,
