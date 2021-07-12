@@ -36,12 +36,13 @@ def seq_submit(analysis_mode,co_analysis):
         print(form.data)
         #If the data is input in copy-paste format
         if form.copypaste_sequence.data:
+            inputSeq = form.copypaste_sequence.data
             flash("Submitted sequence: {}".format(form.copypaste_sequence.data))
         #Else the data will be input in file format
         else:
-            filename = secure_filename(form.file_input.data.filename)
-            filecontent = form.file_input.data.read()
-            flash("File-submitted sequence from {}: {}".format(filename, filecontent))
+            filename = secure_filename(form.file_sequence.data.filename)
+            inputSeq = form.file_sequence.data.read().decode()
+            flash("File-submitted sequence from {}: {}".format(filename, inputSeq))
         
         formData = form.data
         analysis_mode = 1 if analysis_mode=='1' else 2
@@ -60,11 +61,13 @@ def seq_submit(analysis_mode,co_analysis):
         
         analysis_result = seqFIRE_function.startAnalysis(analysis_mode, similarity_threshold, percent_similarity, 
             percent_accept_gap, p_matrix, p_matrix_2, inter_indels, 'True', partial, blocks, strick_combination, combine_with_indel,
-            fuse, multidata, output_mode = 1, inputSeq = form.copypaste_sequence.data)
+            fuse, multidata, 1, inputSeq)
 
-        print('\n\n\nANALYSIS RESULT\n\n')
-        print(analysis_result)
+        button_name=['a','b','c','d','e']
+        button_description=['one','two','three','four','five']
 
-        return render_template('resultPage.html',analysis_result = analysis_result)
+        print(list(zip(analysis_result,button_name,button_description)))
+
+        return render_template('resultPage.html',analysis_result = zip(analysis_result,button_name,button_description))
     return render_template('seq_submit.html', title='Submit your sequence', form = form, module_name = module_name)
 

@@ -32,6 +32,18 @@ $(document).ready(function() {
 
     $("label[for=partial]").append(buildInfoIcon("partial","Message for partial"));
 
+    // Conservation block form
+    $("label[for=percent_similarity]").append(buildInfoIcon("percentSimilarity","Message for percent similarity"));
+
+    $("label[for=p_matrix_2]").append(buildInfoIcon("pMatrix2","Message for conservation block substitute group"));
+
+    $("label[for=percent_accept_gap]").append(buildInfoIcon("percent_accept_gap","Message for percent accept gap"));
+
+    $("label[for=fuse]").append(buildInfoIcon("fuse","Message for minimum size of conserved block"));
+
+    $("label[for=blocks]").append(buildInfoIcon("blocks","Message for maximum size of non-conserved block"));
+
+    $("label[for=strick_combination]").append(buildInfoIcon("strickCombination","Message for combination of conserved profiles"));
         
     /* Creating event handling */
     $(document).on('click','#multiDataIcon',function() {
@@ -40,6 +52,7 @@ $(document).ready(function() {
 
     $(document).on('click','#clearButton', function() {
         $('#copypaste_sequence').val("");
+        $('input[name=seqType]').prop("checked",false);
     });
 
     $(document).on('click','#exampleSeqButton', function() {
@@ -72,5 +85,28 @@ MSLTRTERTIILSLWSKISTQADVIGTETLERLFSCYPQAKTYFPHFDLHSGSAQLRAHGSKVVAAVGDAVKSIDNVTSA
     $(document).on('click','#partialIcon',function() {
         $("#partialPanel").slideToggle("slow");
     });
-    
+    //percentSimilarity pMatrix2 percent_accept_gap fuse blocks strickCombination
+    $(document).on('click','#percentSimilarityIcon',function() {
+        $("#percentSimilarityPanel").slideToggle("slow");
+    });
+
+    $(document).on('click','#pMatrix2Icon',function() {
+        $("#pMatrix2Panel").slideToggle("slow");
+    });
+
+    $(document).on('click','#percent_accept_gapIcon',function() {
+        $("#percent_accept_gapPanel").slideToggle("slow");
+    });
+
+    $(document).on('click','#fuseIcon',function() {
+        $("#fusePanel").slideToggle("slow");
+    });
+
+    $(document).on('click','#blocksIcon', function() {
+        $("#blocksPanel").slideToggle("slow");
+    });
+
+    $(document).on('click','#strickCombinationIcon', function() {
+        $("#strickCombinationPanel").slideToggle("slow");
+    });
 });

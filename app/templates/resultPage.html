@@ -1,8 +1,29 @@
 {% extends "base.html" %}
+
+{% block styles %}
+    {{ super() }}
+    <style> 
+        .resultdiv {
+          display: none;
+        }
+        
+    </style>
+{% endblock %}
+
 {% block content %}
-<div class ='container-fluid'>
-    <pre>
-    {{ analysis_result }}
-    </pre>
-</div>
+<pre>
+    {% for oneSection in analysis_result %}
+        <input type=checkbox id={{ oneSection[1] }}><label for={{ oneSection[1] }}> {{ oneSection[2] }}</label><br>
+        <div id={{ oneSection[1] }}div class=resultdiv>
+        {% for oneLine in oneSection[0] %}
+            {{ oneLine }}
+        {% endfor %}
+        </div>
+    {% endfor %}
+</pre>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="/static/resultPageFunction.js"></script>
 {% endblock %}

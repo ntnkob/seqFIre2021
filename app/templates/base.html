@@ -35,9 +35,17 @@
         {{ render_messages() }}
 
         <!-- Your page content -->
-        {% block content %} {% endblock %}
-
+        <div class='container-fluid'>
+            {% block content %} 
+            {% endblock %}
+        </div>
         
+        <!-- Page footer -->
+        <h3>Citation</h3>
+        Ajawatapong P., Atkison G.C., Watson-Haigh N.S., MacKenzie B. and Baldauf S.L. (2012) <b>SeqFIRE: a web application for automated<br>
+        extraction of indel regions and conserved blocksfrom protein multiple sequence alignments.</b> <i>Nucleic Acids Res.</i>, 40, W340-W347
+        
+
         {% block scripts %}
             <!-- Optional JavaScript -->
             {{ bootstrap.load_js() }}
