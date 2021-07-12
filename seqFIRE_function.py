@@ -595,16 +595,12 @@ def indelExtraction(handle):
 	filename = os.path.basename(infile).split('.')
 
 	if output_mode == 1 or output_mode == 3:
-		for out1 in output_indel_1: print (out1); returnText = returnText + out1 + '\n'
-		print ('\n---SeqFIRE---\n')
-		returnText = returnText + '\n---SeqFIRE---\n\n'
-		for out2 in output_indel_2: print (out2); returnText = returnText + out2 + '\n'
-		print ('\n---SeqFIRE---\n')
-		returnText = returnText + '\n---SeqFIRE---\n\n'
-		for out3 in output_indel_3: print (out3); returnText = returnText + out3 + '\n'
-		print ('\n---SeqFIRE---\n')
-		returnText = returnText + '\n---SeqFIRE---\n\n'
-		for out4 in output_indel_4: print (out4); returnText = returnText + out4 + '\n'
+		returnList = []
+		returnList.append(output_indel_1)
+		returnList.append(output_indel_2)
+		returnList.append(output_indel_3)
+		returnList.append(output_indel_4)
+
 	if output_mode == 2 or output_mode == 3:
 		### Writing output1: Alignment with Indel Mask
 		f1 = open(r'%s.txt' % (filename[0]), 'w')
@@ -631,7 +627,7 @@ def indelExtraction(handle):
 		for out4 in output_indel_4: f4.write('\n' + str(out4))		
 		f4.close()
 
-	return returnText
+	return returnList
 
 #########################################################################
 ######                                                             ######
@@ -992,23 +988,16 @@ def conservedBlockExtraction(handle):
 	##  OUTPUT Section  ##
 	######################
 
-	returnText = ''
 	filename = os.path.basename(infile).split('.')
 
 	if output_mode == 1 or output_mode == 3:
-		for out1 in output_conserved_1: print (out1); returnText = returnText + out1 + '\n'
-		print ('\n---SeqFIRE---\n')
-		returnText = returnText + '\n---SeqFIRE---\n\n'
-		for out2 in output_conserved_2: print (out2); returnText = returnText + out2 + '\n'
-		print ('\n---SeqFIRE---\n')
-		returnText = returnText + '\n---SeqFIRE---\n\n'
-		for out3 in output_conserved_3: print (out3); returnText = returnText + out3 + '\n'
-		print ('\n---SeqFIRE---\n')
-		returnText = returnText + '\n---SeqFIRE---\n\n'
-		for out4 in output_conserved_4: print (out4); returnText = returnText + out4 + '\n'
-		print ('\n---SeqFIRE---\n')
-		returnText = returnText + '\n---SeqFIRE---\n\n'
-		for out5 in output_conserved_5: print (out5); returnText = returnText + out5 + '\n'
+		returnList = []
+		returnList.append(output_conserved_1)
+		returnList.append(output_conserved_2)
+		returnList.append(output_conserved_3)
+		returnList.append(output_conserved_4)
+		returnList.append(output_conserved_5)
+
 	if output_mode == 2 or output_mode == 3:
 		### Writing output1: Alignment with Indel Mask
 		f1 = open(r'%s.txt' % (filename[0]), 'w')
@@ -1034,7 +1023,7 @@ def conservedBlockExtraction(handle):
 		for out5 in output_conserved_5: f5.write('\n' + str(out5))
 		f5.close()
 
-	return returnText
+	return returnList
 
 #########################################################################
 ######                                                             ######
@@ -1227,19 +1216,12 @@ def startAnalysis(analysis_mode = 1,
 				fuse = 4,
 				multidata = 1,
 				output_mode = 2,
-				fileMode = False,
-				inputSeq = "",
-				infile = 'infile', ):
+				inputSeq = ""):
 	setParameter(analysis_mode, similarity_threshold, percent_similarity, percent_accept_gap, p_matrix,
 				p_matrix_2, inter_indels, twilight, partial, blocks, strick_combination, combine_with_indel,
 				fuse, multidata, output_mode)
 	if multidata == 1:
-		if fileMode:
-			f = open(r'%s' % (infile), 'r')
-			record = f.read()
-			f.close()
-		else:
-			record = inputSeq
+		record = inputSeq
 		if checkSeqFormat(record):
 			handle = parseFasta(record)
 		else:
@@ -1254,9 +1236,7 @@ def startAnalysis(analysis_mode = 1,
 		elif analysis_mode == 2: return conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
 
 	elif multidata == 2:
-		f = open(r'%s' % (infile), 'r')
-		records = f.read().split('==seq==')
-		f.close()
+		records = inputSeq.split('==seq==')
 		del records[0]
 		for record in records:
 			a = record.split('==fire==')
