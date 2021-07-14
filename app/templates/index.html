@@ -1,27 +1,68 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super () }}
+<style>
+    .indelModule{
+        background-color: lightpink;
+        text-align: center;
+    }
+    .conservedBlockModule{
+        background-color: lightyellow;
+        text-align: center;
+    }
+    .coAnalysisModule{
+        background-color: lightgrey;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-6">
-        <h1><p class = "text-center">
-            <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">Indel region module<br><small>Find your indel region</small></a>
-        </p></h1>
+<div class='row justify-content-center'>
+    <div class='col'>
+        <h3>About SeqFIRE</h3>
+        <p>SeqFIRE (Sequence Feature and Indel Region Extractor) is a program for extracting regions of interest from a multiple sequence alignment.
+            The program can search for and extract region that contain insertions and deletions (indel), and output details of the indel, as well as binary character matrix of
+            conserved simple indels for use in phylogenetic analysis. SeqFIRE can also extract blocks of conserved columns from a sequence alignment, and output
+            these alignments in proper format for phylogenetic analysis.<br>
+            Click on the feature you wish to extract.
     </div>
-    <div class="col-xs-12 col-sm-6 col-md-6">
-        <h1><p class = "text-center">
-            <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 0) }}">Conserved block module<br><small>Find your conserved block</small></a>
-        </p></h1>
+</div>
+
+</p>
+<div class="row justify-content-around">
+    <div class="col-auto indelModule">
+        <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
+            <div class='media text-center'>
+                <img src="static/logo-indel.png" width='100' height='100' class='align-self-center mr-3 text-center' alt='indelpic'>
+                <div class='media-body'>
+                    <h3 class='mt-0'>Indel<br>region<br>module</h3>
+                </div>
+            </div>
+        </a> 
     </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-4 col-sm-4"></div>
-    <div class="col-xs-4 col-sm-4">
-        <h1><p class = "text-center">
-            <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 1) }}">Co-analysis<br><small>Co-analysis both two</small></a>
-        </p></h1>
+    <div class="col-auto conservedBlockModule">
+        <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
+            <div class='media'>
+                <img src="static/logo-conserved.png" width='100' height='100' class='align-self-center mr-3' alt='conservedpic'>
+                <div class='media-body'>
+                    <h3 class='mt-0'>Conservation<br>block<br>module</h3>
+                </div>
+            </div>
+        </a> 
     </div>
-    <!-- Optional: clear the XS cols if their content doesn't match in height -->
-    <div class="clearfix visible-xs-block"></div>
-    <div class="col-xs-4 col-sm-4"></div>
-  </div>
+    <div class="col-auto coAnalysisModule">
+        <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
+            <div class='media'>
+                <img src="static/logo-co.png" width='100' height='100' class='align-self-center mr-3' alt='copic'>
+                <div class='media-body'>
+                    <h3 class='mt-0'><br>Co-analysis<br></h3>
+                </div>
+            </div>
+        </a> 
+    </div>
+</div>
+<hr>
+
 {% endblock %}

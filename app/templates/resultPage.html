@@ -12,15 +12,28 @@
 
 {% block content %}
 <pre>
-    {% for oneSection in analysis_result %}
-        <input type=checkbox id={{ oneSection[1] }}><label for={{ oneSection[1] }}> {{ oneSection[2] }}</label><br>
-        <div id={{ oneSection[1] }}div class=resultdiv>
-        {% for oneLine in oneSection[0] %}
-            {{ oneLine }}
+    <h3>Output</h3>
+    {% for section, sectiondata in optionOutput.items() %}
+        <h4><u>{{ section }}</u></h4><br>
+        {% for label, data in sectiondata.items() %}
+            <b>{{ label }}:</b>{{ data }}
         {% endfor %}
-        </div>
+    {% endfor %}
+    <h3>Option</h3>
+    SeqFIRE provides a number of different outputs from this analysis. The user can see the results by clicking the appropriate buttons below, or scrolling down to view all results in this window.<br>
+    {% for module, descriptiondata in descriptionOutput.items() %}
+        <h4><u>{{ module }}</u></h4><br>
+        {% for oneButton in descriptiondata %}
+            <input type=checkbox id={{ oneButton[0] }}><label for={{ oneButton[0] }}> {{ oneButton[1] }}</label><br>
+            <div id={{ oneButton[0] }}div class=resultdiv>
+                {% for oneLine in oneButton[2] %}
+                    {{ oneLine }}
+                {% endfor %}
+            </div>
+        {% endfor %}
     {% endfor %}
 </pre>
+<a href="{{ url_for('seq_submit', analysis_mode = goBackParameters[0] , co_analysis = goBackParameters[1]) }}">Go back</a>
 {% endblock %}
 
 {% block scripts %}

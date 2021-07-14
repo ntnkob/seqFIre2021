@@ -23,8 +23,8 @@
     <body>
         <!-- Navigation bar -->
         <nav class="navbar navbar-light bg-light">
-            <a class='navbar-brand'>
-                <img src='/static/logo.jpg' width='120' height='50' alt="seqFIRE Logo" href="{{ url_for('index') }}">
+            <a href="{{ url_for('index') }}" class='navbar-brand'>
+                <img src='/static/logo.jpg' width='120' height='50' alt="seqFIRE Logo">
             </a>
             <ul class="nav nav-pills my-2">
                 {{ render_nav_item('index', 'Home', use_li = True) }}
@@ -36,15 +36,32 @@
 
         <!-- Your page content -->
         <div class='container-fluid'>
+            <div class='col-sm-1'></div>
+            <div class='col-sm-10'>
             {% block content %} 
             {% endblock %}
+            </div>
+            <div class='col-sm-1'></div>
         </div>
         
         <!-- Page footer -->
-        <h3>Citation</h3>
-        Ajawatapong P., Atkison G.C., Watson-Haigh N.S., MacKenzie B. and Baldauf S.L. (2012) <b>SeqFIRE: a web application for automated<br>
-        extraction of indel regions and conserved blocksfrom protein multiple sequence alignments.</b> <i>Nucleic Acids Res.</i>, 40, W340-W347
-        
+        <div class='row'>
+            <div class='container-fluid'>
+                <div class='row justify-content-between'>
+                    <div class='col-8'>
+                    <h3>Citation</h3><p class = "text-left">
+                    Ajawatapong P., Atkison G.C., Watson-Haigh N.S., MacKenzie B. and Baldauf S.L. (2012) <b>SeqFIRE: a web application for automated
+                    extraction of indel regions and conserved blocksfrom protein multiple sequence alignments.</b> <i>Nucleic Acids Res.</i>, 40, W340-W347</p>
+                    </div>
+                    <div class='col-auto'>
+                    <h3 class='text-right'>Contact</h3><p class = "text-right">
+                    email<br>
+                    &copy; Copyright 2011 by SeqFIRE development team
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         {% block scripts %}
             <!-- Optional JavaScript -->

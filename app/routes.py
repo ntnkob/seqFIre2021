@@ -2,7 +2,7 @@ from flask import render_template, flash
 from app import app
 from app.forms import coAnalysisForm, indelForm, conservedBlockForm
 from werkzeug.utils import secure_filename
-import os, seqFIRE_function
+import seqFIRE_function
 
 @app.route('/')
 @app.route('/index')
@@ -33,16 +33,15 @@ def seq_submit(analysis_mode,co_analysis):
 
     #Render and process the form
     if form.is_submitted():
+
         print(form.data)
         #If the data is input in copy-paste format
         if form.copypaste_sequence.data:
             inputSeq = form.copypaste_sequence.data
-            flash("Submitted sequence: {}".format(form.copypaste_sequence.data))
         #Else the data will be input in file format
         else:
             filename = secure_filename(form.file_sequence.data.filename)
             inputSeq = form.file_sequence.data.read().decode()
-            flash("File-submitted sequence from {}: {}".format(filename, inputSeq))
         
         formData = form.data
         analysis_mode = 1 if analysis_mode=='1' else 2
@@ -57,17 +56,75 @@ def seq_submit(analysis_mode,co_analysis):
         strick_combination = form.strick_combination.data if 'strick_combination' in formData else "False"
         combine_with_indel = 'False' if co_analysis == '0' else 'True'
         fuse = form.fuse.data if 'fuse' in formData else 4
-        multidata = 2 if form.multiData.data=='2' in formData else 1
-        
+        multidata = 1 if form.multidata.data==None else 2
+        seqType = form.seqType.data
+        submitAnyway = form.submitAnyway.data
+
         analysis_result = seqFIRE_function.startAnalysis(analysis_mode, similarity_threshold, percent_similarity, 
             percent_accept_gap, p_matrix, p_matrix_2, inter_indels, 'True', partial, blocks, strick_combination, combine_with_indel,
-            fuse, multidata, 1, inputSeq)
+            fuse, multidata, 1, inputSeq, seqType, submitAnyway)
 
-        button_name=['a','b','c','d','e']
-        button_description=['one','two','three','four','five']
+        # if analysis error or warning
+        if analysis_result[0] == False and submitAnyway == 'False':
+            return render_template('seq_submit.html', title='Submit your sequence', form = form, module_name = module_name,
+                                    error_messages = analysis_result[1]['error_messages'], fatal = analysis_result[1]['Fatal'])
+        # if analysis successful
+        else:   
+            
 
-        print(list(zip(analysis_result,button_name,button_description)))
+            #Defining variables for outputting
+            informationDict = {}
+            informationDict['Module'] = module_name
+            informationDict['Mode'] = "Single mode" if multidata == 1 else "Batch mode"
+            informationDict['File name'] = filename if not form.copypaste_sequence.data else '-'
+            informationDict['Sequence Type'] = form.seqType.data
+            informationDict['Count'] = analysis_result[2][0]
+            informationDict['Length'] = analysis_result[2][1]
+            optionOutput = {"Information": informationDict}
+            descriptionOutput = {}
 
-        return render_template('resultPage.html',analysis_result = zip(analysis_result,button_name,button_description))
+            if analysis_mode==1:
+                indelParameterDict = {}
+                indelParameterDict['Amino acid conservation threshold']  = similarity_threshold
+                indelParameterDict['Amino acid substitute group'] = p_matrix
+                indelParameterDict['Inter-indel space'] = inter_indels
+                indelParameterDict['Partial treatment'] = partial
+                optionOutput['Parameters (Indel Region Module)'] = indelParameterDict
+
+                indelButtonName = ['indel_output_1','indel_output_2', 'indel_output_3', 'indel_output_4']
+                indelDescription = ['Alignment with Indel Annotation',
+                                   'Indel List',
+                                   'Indel Matrix',
+                                   'Marked Indel Alignment in NEXUS format']
+                indelData = analysis_result[1] if combine_with_indel=='False' else analysis_result[1][:4]
+
+                descriptionOutput['Indel Region Module'] = zip(indelButtonName, indelDescription, indelData)
+
+            if analysis_mode==2:
+                conservedBlockParameterDict = {}
+                conservedBlockParameterDict['DNA or amino acid conservation threshold'] = percent_similarity
+                conservedBlockParameterDict['DNA or amino acid substitute group'] = p_matrix_2
+                conservedBlockParameterDict['Percent accept gaps'] = percent_accept_gap
+                conservedBlockParameterDict['Min size of conserved block'] = fuse
+                conservedBlockParameterDict['Max size of non-conserved block'] = blocks
+                conservedBlockParameterDict['Combination of conserved profiles'] = strick_combination
+                optionOutput['Parameters (Conserved Block Module)'] = conservedBlockParameterDict
+            
+                conservedBlockButtonName = ['conserved_block_output_1','conserved_block_output_2','conserved_block_output_3','conserved_block_output_4','conserved_block_output_5']
+                conservedBlockDescription = ['Alignment with Conserved Annotation',
+                                            'Full Alignment plus indel profile in FASTA format',
+                                            'Masked alignment (indel regions deleted) in FASTA format',
+                                            'Full alignment with indels listed in a NEXUS \'character block\'',
+                                            'Marked Conserved Alignment in NEXUS format']
+                conservedBlockData = analysis_result[1]
+
+                descriptionOutput['Conserved Block Module'] = zip(conservedBlockButtonName, conservedBlockDescription, conservedBlockData)
+
+            goBackParameters = [analysis_mode, int(co_analysis)]
+            print(optionOutput)
+            print(type(analysis_result[1]))
+            print(len(analysis_result[1]))
+            print(analysis_result[1])
+            return render_template('resultPage.html',optionOutput = optionOutput, descriptionOutput = descriptionOutput, goBackParameters = goBackParameters)
     return render_template('seq_submit.html', title='Submit your sequence', form = form, module_name = module_name)
 

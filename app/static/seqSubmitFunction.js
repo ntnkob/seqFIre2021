@@ -14,6 +14,11 @@ function buildHyperlink(hyperlinkID,hyperlinkWord)
 
 
 $(document).ready(function() {
+    $('#exampleModal').modal('show');
+    $('#submitanyway').click(function () {
+       $('#exampleModal').modal('hide'); 
+       $('#submitAnyway').val('True');
+    });
     /* Adding buttons and tooltips into the website */
     // All forms
     $("label[for=multiData]").append(buildInfoIcon("multiData","Message for multiple dataset analysis mode"));
@@ -109,4 +114,5 @@ MSLTRTERTIILSLWSKISTQADVIGTETLERLFSCYPQAKTYFPHFDLHSGSAQLRAHGSKVVAAVGDAVKSIDNVTSA
     $(document).on('click','#strickCombinationIcon', function() {
         $("#strickCombinationPanel").slideToggle("slow");
     });
+    
 });
