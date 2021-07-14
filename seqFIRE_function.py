@@ -1030,33 +1030,40 @@ def conservedBlockExtraction(handle):
 ######          S E Q U E N C E   V E R I F I C A T I O N          ######
 ######                                                             ######
 #########################################################################
+
+########################
+# RUN BEFORE ANALYZING #
+########################
 #This function check whether each input sequence is in FASTA format
 def checkSeqFormat(inputText):
     if '>' not in inputText:
-        return False
+        return {'Fatal':True, 'error_messages':['The sequence is not in FASTA format']}
     splitInput = inputText.split('>')
     if splitInput[0]!='':
-        return False
+        return {'Fatal':True, 'error_messages':['The sequence is not in FASTA format']}
     del splitInput[0]
     #print(splitInput)
     for oneInput in splitInput:
         if oneInput!=oneInput.strip(' '):
-            return False
+            return {'Fatal':True, 'error_messages':['The sequence is not in FASTA format']}
     return True
     
 	#This function check whether the input has been prepared by seqFIREprep
 def checkPrepped(inputText):
 	if '==seq==' not in inputText:
-		return False
+		return {'Fatal':True, 'error_messages':['The sequence is not properly prepped']}
 	splitInput = inputText.split('==seq==')
 	if splitInput[0]!='':
-		return False
+		return {'Fatal':True, 'error_messages':['The sequence is not properly prepped']}
 	del splitInput[0]
 	for oneInput in splitInput:
-		if checkSeqFormat(oneInput)==False:
-			return False
+		if checkSeqFormat(oneInput)!=True:
+			return {'Fatal':True, 'error_messages':['One of the sequence is not in FASTA format']}
 	return True
-    
+
+#######################
+# RUN AFTER ANALYZING #
+#######################
 ''' 
 Input for these functions is "seqList"
 [[<Sequence name 1>,<Sequence 1>], [<Sequence name 2>,<Sequence 2>], ...]
@@ -1135,10 +1142,10 @@ def checkMultipleSeq(seqList):
         seqLength = len(seqList[0][1])
         for oneSeq in seqList:
             if len(oneSeq[1])!=seqLength:
-                return "FATAL ERROR: Inequal sequence length detected"
+                return ["FATAL ERROR: Inequal sequence length detected"]
         return True
     else:
-        return "FATAL ERROR: Single alignment detected"
+        return ["FATAL ERROR: Single alignment detected"]
 
 #This function check the alignment quality
 '''
@@ -1175,7 +1182,7 @@ Output: True if sequences are ready to analyze
 '''
 def checkReadiness(seqList, selectedType):
     errors = []
-    fatalErrors = []
+    errorDict = {'Fatal':False,'error_messages':[]}
 
     seqTypeResult = checkSeqType(seqList, selectedType)
     multipleSeqResult = checkMultipleSeq(seqList)
@@ -1186,16 +1193,25 @@ def checkReadiness(seqList, selectedType):
     if MSAQualityResult!=True: errors.extend(MSAQualityResult)
 
     for oneError in errors:
-        if oneError.startswith('FATAL ERROR: '): fatalErrors.append(oneError)
+        if oneError.startswith('FATAL ERROR: '):
+            errorDict['Fatal']=True
+        errorDict['error_messages'].append(oneError)
 
-    if fatalErrors:
-        return ("Fatal error","Fatal errors, cannot run seqFIRE. Found error\n"+('\n'.join(oneError for oneError in fatalErrors)))
-    elif errors:
-        return ("Error","Sequences not ready. Found error\n"+('\n'.join(oneError for oneError in errors)))
+    if errorDict['error_messages']!=[]:
+        return errorDict
     else:
-        return (True,)
+        return True
 
+#########################################################################
+######                                                             ######
+######                U T I L I T Y   F U N C T I O N              ######
+######                                                             ######
+#########################################################################
 
+def informationEnricher(seqList):
+	count = len(seqList)
+	length = len(seqList[0][1])
+	return (count, length)
 
 ###################################
 ##   A N A L Y S I S   Z O N E   ##
@@ -1216,41 +1232,46 @@ def startAnalysis(analysis_mode = 1,
 				fuse = 4,
 				multidata = 1,
 				output_mode = 2,
-				inputSeq = ""):
+				inputSeq = "",
+				seqType = "Protein",
+				submitAnyway = 'False'):
 	setParameter(analysis_mode, similarity_threshold, percent_similarity, percent_accept_gap, p_matrix,
 				p_matrix_2, inter_indels, twilight, partial, blocks, strick_combination, combine_with_indel,
 				fuse, multidata, output_mode)
 	if multidata == 1:
-		record = inputSeq
-		if checkSeqFormat(record):
-			handle = parseFasta(record)
+		#Validate if the sequence is in FASTA format
+		checkSeqResult = checkSeqFormat(inputSeq)
+		if checkSeqResult:
+			handle = parseFasta(inputSeq)
 		else:
-			raise Exception("FATAL ERROR: The input is not in FASTA format")
-		readinessResult = checkReadiness(handle,'Protein')
-		if readinessResult[0]!=True:
-			if readinessResult[0]=='Fatal error':
-				raise Exception(readinessResult[1])
-			else:
-				warnings.warn(readinessResult[1])
-		if analysis_mode == 1: return indelExtraction(handle) ### INDEL REGION MODULE ###
-		elif analysis_mode == 2: return conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
-
+			return (False, checkSeqResult)	
+		
+		#Validate sequence and alignment warnings
+		readinessResult = checkReadiness(handle,seqType)
+		print("READINESS RESULT")
+		print(readinessResult)
+		if readinessResult == True or submitAnyway == 'True':
+			if analysis_mode == 1: return (True, indelExtraction(handle), informationEnricher(handle)) ### INDEL REGION MODULE ###
+			elif analysis_mode == 2: return (True, conservedBlockExtraction(handle), informationEnricher(handle)) ### CONSERVED BLOCK MODULE ###
+		else:
+			return (False, readinessResult)
+		
 	elif multidata == 2:
-		records = inputSeq.split('==seq==')
-		del records[0]
+        #Validate if the sequence is properly prepped and in FASTA format
+		checkPreppedResult = checkPrepped(inputSeq)
+		if checkPreppedResult:
+			records = inputSeq.split('==seq==')
+			del records[0]
+		else: 
+			return (False, checkPreppedResult)
+		
+		#Validate each sequence and alignment warnings for each sequence
 		for record in records:
 			a = record.split('==fire==')
-			filename = a[0]
-			print (filename)
-			handle = parseFasta(a[1])
-			if checkReadiness(handle)==False: warnings.warn("Something is wrong!")
-
-			if output_mode == 1 or output_mode == 3:
-				print ('==seq==%s==fire==' % filename)
-			elif output_mode == 2 or output_mode == 3:
-				f = open(r'outfile.txt', 'a')
-				f.write('\n==seq==%s==fire==\n' % filename)
-				f.close()
-
-			if analysis_mode == 1: return indelExtraction(handle) ### INDEL REGION MODULE ###
-			elif analysis_mode == 2: return conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
+			handle = parseFasta(a[1])	
+			readinessResult = checkReadiness(handle,seqType)
+			if readinessResult == True or submitAnyway == 'True': 
+				if analysis_mode == 1: return (True, indelExtraction(handle), informationEnricher(handle)) ### INDEL REGION MODULE ###
+				elif analysis_mode == 2: return (True, conservedBlockExtraction(handle), informationEnricher(handle)) ### CONSERVED BLOCK MODULE ###
+			else:
+				return (False, readinessResult)
