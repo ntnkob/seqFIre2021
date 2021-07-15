@@ -4,16 +4,31 @@
 {{ super () }}
 <style>
     .indelModule{
-        background-color: lightpink;
-        text-align: center;
+        width: 365px;
+        height: 200px;
+        background: #FBE4D4;
+        box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 20px;
+        align-items: center;
+        display: flex;
     }
     .conservedBlockModule{
-        background-color: lightyellow;
-        text-align: center;
+        width: 365px;
+        height: 200px;
+        background: #FFF2CC;
+        box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 20px;
+        align-items: center;
+        display: flex;
     }
     .coAnalysisModule{
-        background-color: lightgrey;
-        text-align: center;
+        width: 365px;
+        height: 200px;
+        background: #F2F2F2;
+        box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 20px;
+        align-items: center;
+        display: flex;
     }
 </style>
 {% endblock %}
@@ -21,8 +36,8 @@
 {% block content %}
 <div class='row justify-content-center'>
     <div class='col'>
-        <h3>About SeqFIRE</h3>
-        <p>SeqFIRE (Sequence Feature and Indel Region Extractor) is a program for extracting regions of interest from a multiple sequence alignment.
+        <h3 style="margin-top: 2rem;">About SeqFIRE</h3>
+        <p style="margin-top: 1rem;">SeqFIRE (Sequence Feature and Indel Region Extractor) is a program for extracting regions of interest from a multiple sequence alignment.
             The program can search for and extract region that contain insertions and deletions (indel), and output details of the indel, as well as binary character matrix of
             conserved simple indels for use in phylogenetic analysis. SeqFIRE can also extract blocks of conserved columns from a sequence alignment, and output
             these alignments in proper format for phylogenetic analysis.<br>
@@ -34,10 +49,10 @@
 <div class="row justify-content-around">
     <div class="col-auto indelModule">
         <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
-            <div class='media text-center'>
-                <img src="static/logo-indel.png" width='100' height='100' class='align-self-center mr-3 text-center' alt='indelpic'>
+            <div class='media'>
+                <img src="static/logo-indel.png" width='100' height='100' class='align-self-center ml-4 mr-4' alt='indelpic'>
                 <div class='media-body'>
-                    <h3 class='mt-0'>Indel<br>region<br>module</h3>
+                    <h3 class='mt-0' style="color:black;">Indel<br>region<br>module</h3>
                 </div>
             </div>
         </a> 
@@ -45,9 +60,9 @@
     <div class="col-auto conservedBlockModule">
         <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
             <div class='media'>
-                <img src="static/logo-conserved.png" width='100' height='100' class='align-self-center mr-3' alt='conservedpic'>
+                <img src="static/logo-conserved.png" width='100' height='100' class='align-self-center ml-4 mr-4' alt='conservedpic'>
                 <div class='media-body'>
-                    <h3 class='mt-0'>Conservation<br>block<br>module</h3>
+                    <h3 class='mt-0' style="color:black;">Conservation<br>block<br>module</h3>
                 </div>
             </div>
         </a> 
@@ -55,9 +70,9 @@
     <div class="col-auto coAnalysisModule">
         <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
             <div class='media'>
-                <img src="static/logo-co.png" width='100' height='100' class='align-self-center mr-3' alt='copic'>
+                <img src="static/logo-co.png" width='100' height='100' class='align-self-center ml-4 mr-4' alt='copic'>
                 <div class='media-body'>
-                    <h3 class='mt-0'><br>Co-analysis<br></h3>
+                    <h3 class='mt-0' style="color:black;"><br>Co-analysis<br></h3>
                 </div>
             </div>
         </a> 
