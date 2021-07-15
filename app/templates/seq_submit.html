@@ -11,17 +11,45 @@
           border: solid 1px #c3c3c3;
           display: none;
         }
+        #inputSection {
+            text-align: center;
+            padding: 13px 33px;
+            width: 196px;
+            background: #FFFFFF;
+            border: 2.5px solid #FEE599;
+            box-sizing: border-box;
+            top: -30px;
+            position: absolute;
+            margin-left: 1rem;
+
+        }
+        #inputsec {
+            border: 2.5px solid #FEE599;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .form-body {
+            padding: 3rem 1rem;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #FFC000;;
+            border-color: #FFC000;;
+        }
         
     </style>
 {% endblock %}
 
 {% block content %}
-<h1>{{ module_name }}<br></h1>
-<div class ='container-fluid'>
-    <h2 id='inputSection'>Input section<br></h2>
-    {{ wtf.render_form(form, id="seqForm") }}
-    <input class="btn btn-primary btn-md" id="submit" name="submit" form="seqForm" type="submit" value="FIRE!">
-
+<h1 style="margin-top: 4rem;">{{ module_name }}<br></h1>
+<div class ='container-fluid' id="inputsec">
+    <h5 id='inputSection'>Input section</h5>
+    <div class="form-body">
+        {{ wtf.render_form(form, id="seqForm") }}
+        <input class="btn btn-primary btn-md" id="submit" name="submit" form="seqForm" type="submit" value="FIRE!">
+    </div>
     {% if error_messages %}
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
