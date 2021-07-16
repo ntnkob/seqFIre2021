@@ -1,0 +1,1 @@
+This folder is where analysis result file will be placed
