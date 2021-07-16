@@ -29,6 +29,7 @@
                 {% for oneLine in oneButton[2] %}
                     {{ oneLine }}
                 {% endfor %}
+                <a href="{{ url_for('download', filename = oneButton[3]) }}"><button>Download {{ oneButton[3] }}</button></a>
             </div>
         {% endfor %}
     {% endfor %}

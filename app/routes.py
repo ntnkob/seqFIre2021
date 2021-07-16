@@ -1,8 +1,8 @@
-from flask import render_template, flash
+from flask import render_template, send_from_directory
 from app import app
 from app.forms import coAnalysisForm, indelForm, conservedBlockForm
 from werkzeug.utils import secure_filename
-import seqFIRE_function
+import seqFIRE_function, os, sys
 
 @app.route('/')
 @app.route('/index')
@@ -57,12 +57,13 @@ def seq_submit(analysis_mode,co_analysis):
         combine_with_indel = 'False' if co_analysis == '0' else 'True'
         fuse = form.fuse.data if 'fuse' in formData else 4
         multidata = 1 if form.multidata.data==None else 2
+        infile = filename if not form.copypaste_sequence.data else 'sequence.txt'
         seqType = form.seqType.data
         submitAnyway = form.submitAnyway.data
 
         analysis_result = seqFIRE_function.startAnalysis(analysis_mode, similarity_threshold, percent_similarity, 
             percent_accept_gap, p_matrix, p_matrix_2, inter_indels, 'True', partial, blocks, strick_combination, combine_with_indel,
-            fuse, multidata, 1, inputSeq, seqType, submitAnyway)
+            fuse, multidata, 3, infile, inputSeq, seqType, submitAnyway)
 
         # if analysis error or warning
         if analysis_result[0] == False and submitAnyway == 'False':
@@ -70,8 +71,6 @@ def seq_submit(analysis_mode,co_analysis):
                                     error_messages = analysis_result[1]['error_messages'], fatal = analysis_result[1]['Fatal'])
         # if analysis successful
         else:   
-            
-
             #Defining variables for outputting
             informationDict = {}
             informationDict['Module'] = module_name
@@ -96,9 +95,10 @@ def seq_submit(analysis_mode,co_analysis):
                                    'Indel List',
                                    'Indel Matrix',
                                    'Marked Indel Alignment in NEXUS format']
-                indelData = analysis_result[1] if combine_with_indel=='False' else analysis_result[1][:4]
+                indelData = analysis_result[1][0]
+                indelFilename = analysis_result[1][1]
 
-                descriptionOutput['Indel Region Module'] = zip(indelButtonName, indelDescription, indelData)
+                descriptionOutput['Indel Region Module'] = zip(indelButtonName, indelDescription, indelData, indelFilename)
 
             if analysis_mode==2:
                 conservedBlockParameterDict = {}
@@ -116,9 +116,10 @@ def seq_submit(analysis_mode,co_analysis):
                                             'Masked alignment (indel regions deleted) in FASTA format',
                                             'Full alignment with indels listed in a NEXUS \'character block\'',
                                             'Marked Conserved Alignment in NEXUS format']
-                conservedBlockData = analysis_result[1]
+                conservedBlockData = analysis_result[1][0]
+                conservedBlockFilename = analysis_result[1][1]
 
-                descriptionOutput['Conserved Block Module'] = zip(conservedBlockButtonName, conservedBlockDescription, conservedBlockData)
+                descriptionOutput['Conserved Block Module'] = zip(conservedBlockButtonName, conservedBlockDescription, conservedBlockData, conservedBlockFilename)
 
             goBackParameters = [analysis_mode, int(co_analysis)]
             print(optionOutput)
@@ -127,4 +128,12 @@ def seq_submit(analysis_mode,co_analysis):
             print(analysis_result[1])
             return render_template('resultPage.html',optionOutput = optionOutput, descriptionOutput = descriptionOutput, goBackParameters = goBackParameters)
     return render_template('seq_submit.html', title='Submit your sequence', form = form, module_name = module_name)
+
+@app.route('/download/<filename>')
+def download(filename):
+    try:
+        return send_from_directory(app.config['OUTPUT_PATH'],filename, as_attachment=True)
+    except:
+        return render_template('404.html')
+
 

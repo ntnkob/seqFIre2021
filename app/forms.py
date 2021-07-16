@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
-from wtforms.fields import TextAreaField, RadioField, DecimalField, IntegerField, SelectField, BooleanField, HiddenField
+from wtforms import Form, FieldList, TextAreaField, RadioField, DecimalField, IntegerField, SelectField, BooleanField, HiddenField
 from wtforms.validators import DataRequired, Optional
 
 class seqForm(FlaskForm):
