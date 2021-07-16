@@ -3,69 +3,112 @@
 
 <!doctype html>
 <html lang="en">
-    <head>
-        {% block head %}
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        {% block styles %}
-            <!-- Bootstrap CSS -->
-            {{ bootstrap.load_css() }}
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-        {% endblock %}
-        
-        <title>{% if title %} seqFIRE - {{ title }} {% else %} seqFIRE {% endif %}</title>
-        {% endblock %}
-        
-    </head>
-    <body>
-        <!-- Navigation bar -->
-        <nav class="navbar navbar-light bg-light">
-            <a href="{{ url_for('index') }}" class='navbar-brand'>
-                <img src='/static/logo.jpg' width='120' height='50' alt="seqFIRE Logo">
-            </a>
-            <ul class="nav nav-pills my-2">
-                {{ render_nav_item('index', 'Home', use_li = True) }}
-                {{ render_nav_item('version_history', "Version", badge = "v.2.21", use_li = True) }}
-                {{ render_nav_item('help', "Help", use_li = True) }}
-            </ul>
-        </nav>
-        {{ render_messages() }}
+<head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- Your page content -->
-        <div class='container-fluid'>
-            <div class='col-sm-1'></div>
-            <div class='col-sm-10'>
-            {% block content %}
-            {% endblock %}
-            </div>
-            <div class='col-sm-1'></div>
-        </div>
-        
-        <!-- Page footer -->
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 4rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #ffe185;
+            color: black;
+        }
+
+        .nav-pills .nav-link {
+            color: black;
+        }
+
+        /*responsive*/
+        @media (max-width: 950px) {
+            #footer-left{
+                align-items: center;
+                justify-content: center;
+            }
+            h5 + p {
+                text-align: center;
+            }
+         }
+    </style>
+    {% endblock %}
+
+
+    <title>{% if title %} seqFIRE - {{ title }} {% else %} seqFIRE {% endif %}</title>
+    {% endblock %}
+
+</head>
+
+<body>
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-light" style="background-color: #ffc000;">
+        <a href="{{ url_for('index') }}" class='navbar-brand'>
+            <img src='/static/logo.jpg' width='120' height='50' alt="seqFIRE Logo">
+        </a>
+        <ul class="nav nav-pills my-2">
+            {{ render_nav_item('index', 'Home', use_li = True) }}
+            {{ render_nav_item('version_history', "Version", badge = "v.2.21", use_li = True) }}
+            {{ render_nav_item('help', "Help", use_li = True) }}
+        </ul>
+    </nav>
+    {{ render_messages() }}
+
+    <!-- Your page content -->
+    <div class='container-fluid'>
         <div class='row'>
-            <div class='container-fluid'>
-                <div class='row justify-content-between'>
-                    <div class='col-8'>
-                    <h3>Citation</h3><p class = "text-left">
-                    Ajawatapong P., Atkison G.C., Watson-Haigh N.S., MacKenzie B. and Baldauf S.L. (2012) <b>SeqFIRE: a web application for automated
-                    extraction of indel regions and conserved blocksfrom protein multiple sequence alignments.</b> <i>Nucleic Acids Res.</i>, 40, W340-W347</p>
-                    </div>
-                    <div class='col-auto'>
-                    <h3 class='text-right'>Contact</h3><p class = "text-right">
-                    email<br>
-                    &copy; Copyright 2011 by SeqFIRE development team
-                    </div>
-                    </div>
+            <div class='col-sm-1 col-md-1 col-lg-1 col-xl-1'></div>
+            <div class='col-sm-10 col-md-10 col-lg-10 col-xl-10'>
+                {% block content %}
+                {% endblock %}
+            </div>
+            <div class='col-sm-1 col-md-1 col-lg-1 col-xl-1'></div>
+        </div>
+    </div>
+
+    <!-- Page footer -->
+    <footer>
+        <div class='container-fluid' style="background-color: #ffc000; padding-top: 1rem; padding-bottom: 1 rem;">
+            <div class='row justify-content-between' style="margin-left: 1rem; margin-right: 1rem; ">
+                <div class='col-8' id="footer-left">
+                    <h5>Citation</h5>
+                    <p class="text-left" style="font-size: 12px;">
+                        Ajawatapong P., Atkison G.C., Watson-Haigh N.S., MacKenzie B. and Baldauf S.L. (2012)
+                        <b>SeqFIRE: a web application for automated
+                            extraction of indel regions and conserved blocksfrom protein multiple sequence
+                            alignments.</b> <i>Nucleic Acids Res.</i>, 40, W340-W347
+                    </p>
+                </div>
+                <div class='col-auto' id="footer-right">
+                    <h5 class='text-right'>Contact</h5>
+                    <p class="text-right" style="font-size: 12px;">
+                        email<br>
+                        &copy; Copyright 2011 by SeqFIRE development team
                 </div>
             </div>
         </div>
+    </footer>
 
-        {% block scripts %}
-            <!-- Optional JavaScript -->
-            {{ bootstrap.load_js() }}
-        {% endblock %}
-    </body>
+    {% block scripts %}
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js() }}
+    {% endblock %}
+</body>
+
 </html>
-
