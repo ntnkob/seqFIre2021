@@ -41,6 +41,7 @@ combine_with_indel = 'False'
 fuse = 4
 multidata = 1
 output_mode = 2
+output_path = 'app/download/'
 
 def setParameter(input_analysis_mode = 1, 
 				input_similarity_threshold = 75.0,
@@ -56,11 +57,12 @@ def setParameter(input_analysis_mode = 1,
 				input_combine_with_indel = 'False',
 				input_fuse = 4,
 				input_multidata = 1,
-				input_output_mode = 2):
+				input_output_mode = 2,
+				input_infile = ''):
     global analysis_mode, similarity_threshold, percent_similarity,\
             percent_accept_gap, p_matrix, p_matrix_2, inter_indels, twilight,\
             partial, blocks, strick_combination, combine_with_indel,\
-            fuse, multidata, output_mode
+            fuse, multidata, output_mode, infile
     analysis_mode = input_analysis_mode
     similarity_threshold = input_similarity_threshold
     percent_similarity = input_percent_similarity
@@ -76,71 +78,7 @@ def setParameter(input_analysis_mode = 1,
     fuse = input_fuse
     multidata = input_multidata
     output_mode = input_output_mode
-    
-def usage():
-	text="""
-SeqFIRE: Sequence Feature and Indl Region Extractor
-Version 1.0  Copyright 2011
-URL: www.seqfire.org
----------------------------------------------------
-[ HELP MESSAGE ]
-
-for quick help type
->>> python seqfire.py -h
-
-for quick started just type
->>> python seqfire.py -i {inputfile with path} {other options}
-
-+-------------------+
-| Options available |
-+-------------------+
-
-Option  Description
-
- -h     display SeqFIRE help
- -i     path and name of your infile
- -a     analysis module 
-             1 = indel region module
-             2 = conserved block module
-             Default = 1
- -c     similarity threshold for indel regions identification (0.0 - 100.0)
-             Default = 75.0
- -d     similarity threshold for conserved blocks identification (0.0 - 100.0) 
-             Default = 75.0
- -j     percent accept gap (0.0 - 100.0)
-             Default = 40.0
- -g     substitution group for indel identification
-             (PAM250, PAM60, BLOSUM40, BLOSUM62, BLOSUM80, or NONE)
-             Default = NONE
- -k     substitution group for cnserved block identification
-             (PAM250, PAM60, BLOSUM40, BLOSUM62, BLOSUM80, or NONE)
-             Default = NONE
- -b     interindel space (1-10)
-             Default = 3
- -t     twilight treatment (True or False)
-             Default = True
- -p     partial sequence treatment (True or False)
-             Default = False
- -s     space between 2 conserved blocks (1, 2, 3, ...)
-             Default = 3
- -f     minimum size for non-conserved block (1, 2, 3, ...)
-             Default = 4
- -r     strick combination (True or False)
-             Default = False
- -e     get indel matrix together with conserved region (True or False)
-             Default = False
- -m     multiple data analysis
-             1 = single dataset
-             2 = multiple datasets (batch mode)
-             Default = 2
- -o     output mode
-             1 = show output on screen 
-             2 = save output in a file
-             3 = both show output on screen & save in a file
-
-For more details, please read the SeqFIRE manual (www.seqfire.org/help).
-"""
-	print (text)
+    infile = input_infile
 
 def parseFasta(records):
 	rec = []
@@ -573,7 +511,6 @@ def indelExtraction(handle):
 	##  OUTPUT Section  ##
 	######################
 
-	returnText = ''
 	if partial == 'True':
 		output_indel_1 = genIndelAlignment(pseudoalignments, indel_profile, ruler, indel_positions)
 		#output_indel_4 = genHomologAlignment(pseudoalignments, indel_profile, ruler, indel_positions)
@@ -602,32 +539,39 @@ def indelExtraction(handle):
 		returnList.append(output_indel_4)
 
 	if output_mode == 2 or output_mode == 3:
+		filenameList = []
 		### Writing output1: Alignment with Indel Mask
-		f1 = open(r'%s.txt' % (filename[0]), 'w')
+		f1 = open(r'%s%s.txt' % (output_path, filename[0]), 'w')
 		f1.write(output_indel_1[0])
 		f1.write(output_indel_1[1] + '\n')
 		del output_indel_1[:2]
 		for out1 in output_indel_1: f1.write(str(out1) + '\n')
 		f1.close()
+		filenameList.append('%s.txt' % (filename[0]))
 
 		### Writing output2: Indel List
-		f2 = open(r'%s.indel' % (filename[0]), 'w')
+		f2 = open(r'%s%s.indel' % (output_path, filename[0]), 'w')
 		f2.write(output_indel_2[0])
 		del output_indel_2[0]
 		for out2 in output_indel_2: f2.write('\n' + str(out2))
 		f2.close()
+		filenameList.append('%s.indel' % (filename[0]))
 
 		### Writing output3: Indel Matrix
-		f3 = open(r'%s_matrix.nex' % (filename[0]), 'w')
+		f3 = open(r'%s%s_matrix.nex' % (output_path, filename[0]), 'w')
 		for out3 in output_indel_3: f3.write('\n' + str(out3))		
 		f3.close()
+		filenameList.append('%s_matrix.nex' % (filename[0]))
 
 		### Writing output4: Msked Alignment
-		f4 = open(r'%s.nex' % (filename[0]), 'w')
+		f4 = open(r'%s%s.nex' % (output_path, filename[0]), 'w')
 		for out4 in output_indel_4: f4.write('\n' + str(out4))		
 		f4.close()
+		filenameList.append('%s.nex' % (filename[0]))
 
-	return returnList
+	if output_mode==1: return returnList
+	if output_mode==2: return filenameList
+	if output_mode==3: return [returnList, filenameList]
 
 #########################################################################
 ######                                                             ######
@@ -999,31 +943,39 @@ def conservedBlockExtraction(handle):
 		returnList.append(output_conserved_5)
 
 	if output_mode == 2 or output_mode == 3:
+		filenameList = []
 		### Writing output1: Alignment with Indel Mask
-		f1 = open(r'%s.txt' % (filename[0]), 'w')
+		f1 = open(r'%s%s.txt' % (output_path, filename[0]), 'w')
 		f1.write(output_conserved_1[0])
 		f1.write(output_conserved_1[1] + '\n')
 		del output_conserved_1[:2]
 		for out1 in output_conserved_1: f1.write(str(out1) + '\n')
 		f1.close()
+		filenameList.append('%s.txt' % (filename[0]))
 		### Writing output2: Alignment in Fasta format + Conserved block profile
-		f2 = open(r'%s.fasta' % (filename[0]), 'w')
+		f2 = open(r'%s%s.fasta' % (output_path, filename[0]), 'w')
 		for out2 in output_conserved_2: f2.write('\n' + str(out2))
 		f2.close()
+		filenameList.append('%s.fasta' % (filename[0]))
 		### Writing output3: Alignment in Fasta format
-		f3 = open(r'%s_2_short.fasta' % (filename[0]), 'w')
+		f3 = open(r'%s%s_2_short.fasta' % (output_path, filename[0]), 'w')
 		for out3 in output_conserved_3: f3.write('\n' + str(out3))
 		f3.close()
+		filenameList.append('%s.short.fasta' % (filename[0]))
 		### Writing output4: Alignment in NESXUS format + Conserved block profile
-		f4 = open(r'%s_2.nex' % (filename[0]), 'w')
+		f4 = open(r'%s%s_2.nex' % (output_path, filename[0]), 'w')
 		for out4 in output_conserved_4: f4.write('\n' + str(out4))
 		f4.close()
+		filenameList.append('%s.nex' % (filename[0]))
 		### Writing output4: Alignment in NESXUS format + Conserved block profile
-		f5 = open(r'%s_2_short.nex' % (filename[0]), 'w')
+		f5 = open(r'%s%s_2_short.nex' % (output_path, filename[0]), 'w')
 		for out5 in output_conserved_5: f5.write('\n' + str(out5))
 		f5.close()
+		filenameList.append('%s.short.nex' % (filename[0]))
 
-	return returnList
+	if output_mode==1: return returnList
+	if output_mode==2: return filenameList
+	if output_mode==3: return [returnList, filenameList]
 
 #########################################################################
 ######                                                             ######
@@ -1232,12 +1184,13 @@ def startAnalysis(analysis_mode = 1,
 				fuse = 4,
 				multidata = 1,
 				output_mode = 2,
-				inputSeq = "",
+				infile = 'sequence.txt',
+				inputSeq = '',
 				seqType = "Protein",
 				submitAnyway = 'False'):
 	setParameter(analysis_mode, similarity_threshold, percent_similarity, percent_accept_gap, p_matrix,
 				p_matrix_2, inter_indels, twilight, partial, blocks, strick_combination, combine_with_indel,
-				fuse, multidata, output_mode)
+				fuse, multidata, output_mode, infile)
 	if multidata == 1:
 		#Validate if the sequence is in FASTA format
 		checkSeqResult = checkSeqFormat(inputSeq)
