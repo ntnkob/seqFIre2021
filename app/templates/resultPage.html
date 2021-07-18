@@ -7,12 +7,39 @@
           display: none;
         }
         
+        input[type="checkbox"],
+        input[type="radio"] {
+        appearance: none;
+        background-color: #fff;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        border: 2px solid #ffc000;
+        height: 1em;
+        width: 1em;
+        }
+        
+        input[type="checkbox"]:checked {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADsUlEQVRoQ+2YXU7jMBSFbTcpBSSmgNoXXigboCM20CV0B1NWMGIHMztgB5QdMDtgAwgPUpGoBHSQygMVaioEKg2JRydKqv44ifMDpBJ+tu/9Tu7xzU0oWfBFF5yffAn4qAru7e19I4ScCiGqQojt8/Pzf8i9EBUAvG3bp4SQKqCFEIec84OFEAB4y7LG8G7FOef8e+YFAN40zVl4R4Ou68Wzs7NBZi3kwcPzsntGKW1cXFwcZ1IA4F9fX6VP3hMjhGi2Wq39zAkA/HA4DIR3RXRarVYlUwJ2dna+FQoFFXhHw+XlJc2MAMDrun5KKZV6fvYeoJVeXV0dZEKAB+/1eYWXIzdNs3Zzc/P5XQjwmqYp24YQYhBCau12+++nvwcAn8vlosATtM92u33sVenTLAR4xlgkeLTO6+vr/UmLKQuoVCq7lNK6EOLk9vbWKV/cBXgMZhE8j1Qc1oHvIwsAvJuw6HkwrgjACyGiwju+l+UMrQDg3YSA95ZBKZUGDKoK4CenyggVbHQ6nbHvlSsAeDfhJPxYBGNMWQTgJVNlqAb4/u7ubsr3SgK2trZ23Usmg/didHRdr876cpYK8G9vb87HSCjxxAZKKdc0bc73oQIATymFT4PgvTg8n8/7JgH8aDSK6nnENoQQtW63G9gw5u4A4CcurOoD40tLS3MiAB82VQYkaHS7XanvfSsAeMmFVRXRvL+/H3sV8IpTpSz+VKwggHEF1tfXMQmi126rEkv2wSonQogi3pgxY/Hl5eVA30srUC6Xj9ykCfgTH3V8//DwoPyiHFegXC73FS9tYkq/AEKIRq/XC/W9tAKlUukHIaT5bnThgZu9Xs+33/sdn+pCpVLpJz4UwnOlvoNbllXr9/tTc45Klrk2urm5eUQIwQX8qGVYllU1DMP50xZ1SWehjY2NI/gxarA4+xlj9cfHxz9xzuKM7zBXLBY/ohKHhmE4vwjjrsBpdG1t7T1bKx8MBs7vwSQrdJyGiHe4EwZjLLbvpW006Cmsrq6mWgl82T09PcX2fWQBOAARKVXi8Pn5OZHvYwnAoZWVlaQi+MvLS2LfxxbgiYjZYjHnVIfDYax+72fx0EssO1goFCJXwrbt+mg0SsX3iSrgHc7n88oiMJ6Yppma71MRgCC6rquIwH/MVH2fmgAEyuVyQS3W0DQtdd+nKsAT4dNi65Zlpe771AUgIGNs1k6/bNv+nWRMUDkbqwsFBPZE4MMo8seJCvDsnrQFxGFIdOZLQKLHl8Lh/51VgECHxbTCAAAAAElFTkSuQmCC")
+        }
+        
+        a {
+            color: #ffc000;
+        }
+        a:link {
+            color: #ffc000;
+        }
+        
+        a:hover {
+            color: #bd8e00;
+        }
+        
     </style>
 {% endblock %}
 
 {% block content %}
 <pre>
-    <h3>Output</h3>
+    <h3 style="margin-top: 2rem;">Output</h3>
     {% for section, sectiondata in optionOutput.items() %}
         <h4><u>{{ section }}</u></h4><br>
         {% for label, data in sectiondata.items() %}
