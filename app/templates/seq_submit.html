@@ -27,6 +27,7 @@
             border: 2.5px solid #FEE599;
             margin-top: 3rem;
             position: relative;
+            margin-bottom: 5rem;
         }
 
         .form-body {
@@ -35,15 +36,33 @@
 
         .btn-primary {
             color: #fff;
-            background-color: #FFC000;;
-            border-color: #FFC000;;
+            background-color: #FFC000;
+            border-color: #FFC000;
+        }
+
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #ce9a00;
+            border-color: #ce9a00;
         }
         
     </style>
 {% endblock %}
 
 {% block content %}
-<h1 style="margin-top: 4rem;">{{ module_name }}<br></h1>
+<div class="media">
+    {% if module_name == "Indel module" %}
+    <img class="align-self-center mr-3" src="../static/logo-indel.png" alt="indelpic">
+    {% elif module_name == "Conservation block module" %}
+    <img class="align-self-center mr-3" src="../static/logo-conserved.png" alt="conservedpic">
+    {% else %}
+    <img class="align-self-center mr-3" src="../static/logo-co.png" alt="copic">
+    {% endif %}
+    
+    <div class="media-body">
+        <h1 style="margin-top: 4rem;">{{ module_name }}<br></h1>
+    </div>
+</div>
 <div class ='container-fluid' id="inputsec">
     <h5 id='inputSection'>Input section</h5>
     <div class="form-body">
