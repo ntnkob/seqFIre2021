@@ -3,7 +3,7 @@
 {% block styles %}
 {{ super () }}
 <style>
-    .indelModule{
+    .indelModule {
         width: 365px;
         height: 200px;
         background: #FBE4D4;
@@ -12,7 +12,8 @@
         align-items: center;
         display: flex;
     }
-    .conservedBlockModule{
+
+    .conservedBlockModule {
         width: 365px;
         height: 200px;
         background: #FFF2CC;
@@ -21,7 +22,8 @@
         align-items: center;
         display: flex;
     }
-    .coAnalysisModule{
+
+    .coAnalysisModule {
         width: 365px;
         height: 200px;
         background: #F2F2F2;
@@ -37,9 +39,12 @@
 <div class='row justify-content-center'>
     <div class='col'>
         <h3 style="margin-top: 2rem;">About SeqFIRE</h3>
-        <p style="margin-top: 1rem;">SeqFIRE (Sequence Feature and Indel Region Extractor) is a program for extracting regions of interest from a multiple sequence alignment.
-            The program can search for and extract region that contain insertions and deletions (indel), and output details of the indel, as well as binary character matrix of
-            conserved simple indels for use in phylogenetic analysis. SeqFIRE can also extract blocks of conserved columns from a sequence alignment, and output
+        <p style="margin-top: 1rem;">SeqFIRE (Sequence Feature and Indel Region Extractor) is a program for extracting
+            regions of interest from a multiple sequence alignment.
+            The program can search for and extract region that contain insertions and deletions (indel), and output
+            details of the indel, as well as binary character matrix of
+            conserved simple indels for use in phylogenetic analysis. SeqFIRE can also extract blocks of conserved
+            columns from a sequence alignment, and output
             these alignments in proper format for phylogenetic analysis.<br>
             Click on the feature you wish to extract.
     </div>
@@ -50,43 +55,67 @@
     <div class="col-auto indelModule">
         <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
             <div class='media'>
-                <img src="static/logo-indel.png" width='100' height='100' class='align-self-center ml-4 mr-4' alt='indelpic'>
+                <img src="static/logo-indel.png" width='100' height='100' class='align-self-center ml-4 mr-4'
+                    alt='indelpic'>
                 <div class='media-body'>
                     <h3 class='mt-0' style="color:black;">Indel<br>region<br>module</h3>
                 </div>
             </div>
-        </a> 
+        </a>
     </div>
     <div class="col-auto conservedBlockModule">
-        <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
+        <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 0) }}">
             <div class='media'>
-                <img src="static/logo-conserved.png" width='100' height='100' class='align-self-center ml-4 mr-4' alt='conservedpic'>
+                <img src="static/logo-conserved.png" width='100' height='100' class='align-self-center ml-4 mr-4'
+                    alt='conservedpic'>
                 <div class='media-body'>
                     <h3 class='mt-0' style="color:black;">Conservation<br>block<br>module</h3>
                 </div>
             </div>
-        </a> 
+        </a>
     </div>
     <div class="col-auto coAnalysisModule">
-        <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
+        <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 1) }}">
             <div class='media'>
                 <img src="static/logo-co.png" width='100' height='100' class='align-self-center ml-4 mr-4' alt='copic'>
                 <div class='media-body'>
                     <h3 class='mt-0' style="color:black;"><br>Co-analysis<br></h3>
                 </div>
             </div>
-        </a> 
+        </a>
     </div>
 </div>
-<hr>
-<h3>What's New</h3><br>
+<hr color="#ffc000" size="2">
+<div class="row" style="margin-top: 2rem;">
+    <div class="col-1"></div>
+    <div class="col">
+        <h3>What's New</h3><br>
 
-<h4>Version 1.x</h4>
-<ol>
-    <li>details...</li>
-    <li>...</li>
-    <li>...</li>
-    <li>...</li>
-</ol>
+        <h4>Version 1.x</h4>
+        <ol>
+            <li>details...</li>
+            <li>...</li>
+            <li>...</li>
+            <li>...</li>
+        </ol><br>
 
+        <h3>Information</h3><br>
+        <p>Compatibility    xx</p>
+        <p>Language         English</p>	
+    </div>
+    <div class="col">
+        <h3>Version History</h3><br>
+
+        <h4>Version 1.1</h4>
+        <p>since: DD/MM/YYYY (x years ago)</p>
+        <ol>
+            <li>details...</li>
+            <li>...</li>
+            <li>...</li>
+            <li>...</li>
+        </ol>
+    </div>
+    <div class="col-1"></div>
+
+</div>
 {% endblock %}
