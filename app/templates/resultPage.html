@@ -33,34 +33,48 @@
         a:hover {
             color: #bd8e00;
         }
-        
+
+        .btn-primary {
+            color: #fff;
+            background-color: #FFC000;
+            border-color: #FFC000;
+        }
+
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #ce9a00;
+            border-color: #ce9a00;
+        }
+
     </style>
 {% endblock %}
 
 {% block content %}
-<pre>
-    <h3 style="margin-top: 2rem;">Output</h3>
+
+    <h2 style="margin-top: 2rem;">Output</h2><br>
     {% for section, sectiondata in optionOutput.items() %}
-        <h4><u>{{ section }}</u></h4><br>
+        <h4 style="margin-top: 1rem;"><u>{{ section }}</u></h4>
         {% for label, data in sectiondata.items() %}
-            <b>{{ label }}:</b>{{ data }}
+            <b>{{ label }} : </b>{{ data }}<br>
         {% endfor %}
     {% endfor %}
-    <h3>Option</h3>
+    <h2 style="margin-top: 2rem;">Option</h2>
     SeqFIRE provides a number of different outputs from this analysis. The user can see the results by clicking the appropriate buttons below, or scrolling down to view all results in this window.<br>
     {% for module, descriptiondata in descriptionOutput.items() %}
-        <h4><u>{{ module }}</u></h4><br>
-        {% for oneButton in descriptiondata %}
-            <input type=checkbox id={{ oneButton[0] }}><label for={{ oneButton[0] }}> {{ oneButton[1] }}</label><br>
+        <h4 style="margin-top: 2rem;"><u>{{ module }}</u></h4><br>
+        {% for oneButton in descriptiondata %}<br>
+            <input type=checkbox id={{ oneButton[0] }}>      <label for={{ oneButton[0] }}> {{ oneButton[1] }}</label><br>
             <div id={{ oneButton[0] }}div class=resultdiv>
+                <pre>
                 {% for oneLine in oneButton[2] %}
                     {{ oneLine }}
                 {% endfor %}
-                <a href="{{ url_for('download', filename = oneButton[3]) }}"><button>Download {{ oneButton[3] }}</button></a>
+                </pre>
+                <a href="{{ url_for('download', filename = oneButton[3]) }}"><button class="btn btn-primary">Download {{ oneButton[3] }}</button></a>
             </div>
         {% endfor %}
-    {% endfor %}
-</pre>
+    {% endfor %}<br>
+
 <a href="{{ url_for('seq_submit', analysis_mode = goBackParameters[0] , co_analysis = goBackParameters[1]) }}">Go back</a>
 {% endblock %}
 
