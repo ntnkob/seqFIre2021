@@ -2,7 +2,7 @@ function buildInfoIcon(inputID,infoMessage)
 {
     var iconID = inputID+'Icon'
     var panelID = inputID+'Panel'
-    var infoHTML = `<i class="bi bi-question-circle-fill" style="font-size: 2rem; color:#FFD700"; id="${iconID}"></i>`;
+    var infoHTML = `  <i class="bi bi-question-circle-fill" style="font-size: 16px; color:#FFD700"; id="${iconID}"></i>`;
     var panelHTML = `<div class='paneltext' id="${panelID}">${infoMessage}</div>`;
     return infoHTML+'\n'+panelHTML;
 }
@@ -11,9 +11,12 @@ function buildHyperlink(hyperlinkID,hyperlinkWord)
     var hyperlinkHTML = `<a href="#" class="text-decoration-none" id="${hyperlinkID}">${hyperlinkWord}</a>`
     return hyperlinkHTML;
 }
+function replaceTemplateIndex(value, index) {
+    return value.replace(ID_RE, '$1'+index);
+}
 
-
-$(document).ready(function() {
+$(document).ready(function() {        
+    // Modal control
     $('#exampleModal').modal('show');
     $('#submitanyway').click(function () {
        $('#exampleModal').modal('hide'); 
@@ -21,15 +24,55 @@ $(document).ready(function() {
     });
     /* Adding buttons and tooltips into the website */
     // All forms
-    $("label[for=multiData]").append(buildInfoIcon("multiData","Message for multiple dataset analysis mode"));
+    $("label[for=multidata]").append(buildInfoIcon("multiData","Message for multiple dataset analysis mode"));
 
-    $("label[for=copypaste_sequence]").append(buildHyperlink("clearButton","Clear"));
-    $("label[for=copypaste_sequence]").append(buildHyperlink("exampleSeqButton","Load Example Alignment"));
+    $("label[for=copypaste_sequence]").append(buildInfoIcon("fasta","Message for FASTA file format"));
+    $("label[for=copypaste_sequence]").append('<br>'+buildHyperlink("clearButton","Clear"));
+    $("label[for=copypaste_sequence]").append('<br>'+buildHyperlink("exampleSeqButton","Load Example Alignment"));
 
     $("label[for=file_sequence]").append(buildInfoIcon("fileUpload","Message for file uploading"));
 
     // Indel forms
     $("label[for=similarity_threshold]").append(buildInfoIcon("similarityThreshold","Message for indel similarity threshold"));
+    $("label[for=similarity_threshold]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addRange"></i>`);
+    $("#addRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delRange"></i>`);
+    $("#delRange").after(`<br><p id="statusMessage"></p>`);
+    var fieldCount = $("form>fieldset").first().children().length - 1 //The first label is counted, so we have to subtract it out
+    $('#addRange').click(function () {
+        if (fieldCount<5) 
+        {
+            newForm = $("form>fieldset").first().children().last().clone()
+            console.log("Changing threshold-"+(fieldCount-1).toString()+" to "+(fieldCount).toString())
+            newForm.html(newForm.html().replace("Threshold-"+(fieldCount-1).toString(),"Threshold-"+(fieldCount).toString()))
+            newForm.find('label, input').each(function() {
+                var $item = $(this);
+                if ($item.is('label')) {
+                    $item.attr('for', $item.attr('for').replace("threshold-"+(fieldCount-1).toString(),"threshold-"+(fieldCount).toString()));
+                    return;
+                }
+                $item.attr('id', $item.attr('id').replace("threshold-"+(fieldCount-1).toString(),"threshold-"+(fieldCount).toString()));
+                $item.attr('name', $item.attr('name').replace("threshold-"+(fieldCount-1).toString(),"threshold-"+(fieldCount).toString()));
+            });
+            fieldCount = fieldCount+1
+            $("#statusMessage").text("")
+            $("form>fieldset").first().append("<fieldset>"+newForm.html()+"</fieldset>")
+        }
+        else {
+            $("#statusMessage").text("Full row")
+        }
+    });
+
+    $('#delRange').click(function () {
+        if (fieldCount>1) {
+            $("form>fieldset").first().children().last().remove()
+            fieldCount = fieldCount-1
+            $("#statusMessage").text("")
+        }
+        else {
+            $("#statusMessage").text("At least one range is required")
+        }
+        console.log("Fieldcount = "+fieldCount.toString())
+    });
 
     $("label[for=p_matrix]").append(buildInfoIcon("pMatrix","Message for indel substitute group"));
 
@@ -39,6 +82,45 @@ $(document).ready(function() {
 
     // Conservation block form
     $("label[for=percent_similarity]").append(buildInfoIcon("percentSimilarity","Message for percent similarity"));
+    $("label[for=percent_similarity]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addConservedRange"></i>`);
+    $("#addConservedRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delConservedRange"></i>`);
+    $("#delConservedRange").after(`<br><p id="conservedStatusMessage"></p>`);
+    var conservedFieldCount = $("form>fieldset").last().children().length - 1 //The first label is counted, so we have to subtract it out
+    $('#addConservedRange').click(function () {
+        if (conservedFieldCount<5) 
+        {
+            newForm = $("form>fieldset").last().children().last().clone()
+            console.log("Changing conserved threshold-"+(conservedFieldCount-1).toString()+" to "+(conservedFieldCount).toString())
+            newForm.html(newForm.html().replace("Similarity-"+(conservedFieldCount-1).toString(),"Similarity-"+(conservedFieldCount).toString()))
+            newForm.find('label, input').each(function() {
+                var $item = $(this);
+                if ($item.is('label')) {
+                    $item.attr('for', $item.attr('for').replace("similarity-"+(conservedFieldCount-1).toString(),"similarity-"+(conservedFieldCount).toString()));
+                    return;
+                }
+                $item.attr('id', $item.attr('id').replace("similarity-"+(conservedFieldCount-1).toString(),"similarity-"+(conservedFieldCount).toString()));
+                $item.attr('name', $item.attr('name').replace("similarity-"+(conservedFieldCount-1).toString(),"similarity-"+(conservedFieldCount).toString()));
+            });
+            conservedFieldCount = conservedFieldCount+1
+            $("#conservedStatusMessage").text("")
+            $("form>fieldset").last().append("<fieldset>"+newForm.html()+"</fieldset>")
+        }
+        else {
+            $("#conservedStatusMessage").text("Full row")
+        }
+    });
+
+    $('#delConservedRange').click(function () {
+        if (conservedFieldCount>1) {
+            $("form>fieldset").last().children().last().remove()
+            conservedFieldCount = conservedFieldCount-1
+            $("#conservedStatusMessage").text("")
+        }
+        else {
+            $("#conservedStatusMessage").text("At least one range is required")
+        }
+        console.log("Fieldcount = "+conservedFieldCount.toString())
+    });
 
     $("label[for=p_matrix_2]").append(buildInfoIcon("pMatrix2","Message for conservation block substitute group"));
 
@@ -53,6 +135,10 @@ $(document).ready(function() {
     /* Creating event handling */
     $(document).on('click','#multiDataIcon',function() {
         $("#multiDataPanel").slideToggle("slow");
+    });
+
+    $(document).on('click','#fastaIcon',function() {
+        $("#fastaPanel").slideToggle("slow");
     });
 
     $(document).on('click','#clearButton', function() {
@@ -113,6 +199,18 @@ MSLTRTERTIILSLWSKISTQADVIGTETLERLFSCYPQAKTYFPHFDLHSGSAQLRAHGSKVVAAVGDAVKSIDNVTSA
 
     $(document).on('click','#strickCombinationIcon', function() {
         $("#strickCombinationPanel").slideToggle("slow");
+    });
+
+    $("input[id=seqType-0]").click(function () {
+        $("select[id=p_matrix]").val("NONE")
+        $("select[id=p_matrix]").attr("disabled",true)
+        $("select[id=p_matrix_2]").val("NONE")
+        $("select[id=p_matrix_2]").attr("disabled",true)
+    });
+
+    $("input[id=seqType-1]").click(function () {
+        $("select[id=p_matrix]").attr("disabled",false)
+        $("select[id=p_matrix_2]").attr("disabled",false)
     });
     
 });

@@ -45,8 +45,21 @@ def seq_submit(analysis_mode,co_analysis):
         
         formData = form.data
         analysis_mode = 1 if analysis_mode=='1' else 2
-        similarity_threshold = form.similarity_threshold.data if 'similarity_threshold' in formData else 75.0
-        percent_similarity = form.percent_similarity.data if 'percent_similarity' in formData else 75.0
+
+        similarity_threshold = []
+        if 'similarity_threshold' in formData:
+            for oneRange in form.similarity_threshold.data:
+                similarity_threshold.append(list(oneRange.values()))
+        else:
+            similarity_threshold = [[75,100]]
+
+        percent_similarity = []
+        if 'percent_similarity' in formData:
+            for oneRange in form.percent_similarity.data:
+                percent_similarity.append(list(oneRange.values()))
+        else:
+            percent_similarity = [[75,100]]
+            
         percent_accept_gap = form.percent_accept_gap.data if 'percent_accept_gap' in formData else 40.0
         p_matrix = form.p_matrix.data if 'p_matrix' in formData else "NONE"
         p_matrix_2 = form.p_matrix_2.data if 'p_matrix_2' in formData else "NONE"
@@ -62,7 +75,7 @@ def seq_submit(analysis_mode,co_analysis):
         submitAnyway = form.submitAnyway.data
 
         analysis_result = seqFIRE_function.startAnalysis(analysis_mode, similarity_threshold, percent_similarity, 
-            percent_accept_gap, p_matrix, p_matrix_2, inter_indels, 'True', partial, blocks, strick_combination, combine_with_indel,
+            percent_accept_gap, p_matrix, p_matrix_2, inter_indels, partial, blocks, strick_combination, combine_with_indel,
             fuse, multidata, 3, infile, inputSeq, seqType, submitAnyway)
 
         # if analysis error or warning

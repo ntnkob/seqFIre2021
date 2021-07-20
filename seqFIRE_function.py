@@ -27,13 +27,12 @@ pMatrices = {'PAM250': [('?'), ('M','I','V','L'), ('D','N','H','Q','E'), ('F','I
 prog_title = '#  SeqFIRE: Sequence Feature and Indel Region Extractor\n#  version 1.0.1 (c) 2011'
 infile = 'infile'
 analysis_mode = 1
-similarity_threshold = 75.0
-percent_similarity = 75.0
+similarity_threshold = [[75.0,100.0]]
+percent_similarity = [[75.0,100.0]]
 percent_accept_gap = 40.0
 p_matrix = 'NONE'
 p_matrix_2 = 'NONE'
 inter_indels = 3
-twilight = 'True'
 partial = 'True'
 blocks = 3
 strick_combination = 'False'
@@ -44,13 +43,12 @@ output_mode = 2
 output_path = 'app/download/'
 
 def setParameter(input_analysis_mode = 1, 
-				input_similarity_threshold = 75.0,
-				input_percent_similarity = 75.0,
+				input_similarity_threshold = [[75.0,100.0]],
+				input_percent_similarity = [[75.0,100.0]],
 				input_percent_accept_gap = 40.0,
 				input_p_matrix = 'NONE',
 				input_p_matrix_2 = 'NONE',
 				input_inter_indels = 3,
-				input_twilight = 'True',
 				input_partial = 'True',
 				input_blocks = 3,
 				input_strick_combination = 'False',
@@ -60,7 +58,7 @@ def setParameter(input_analysis_mode = 1,
 				input_output_mode = 2,
 				input_infile = ''):
     global analysis_mode, similarity_threshold, percent_similarity,\
-            percent_accept_gap, p_matrix, p_matrix_2, inter_indels, twilight,\
+            percent_accept_gap, p_matrix, p_matrix_2, inter_indels,\
             partial, blocks, strick_combination, combine_with_indel,\
             fuse, multidata, output_mode, infile
     analysis_mode = input_analysis_mode
@@ -70,7 +68,6 @@ def setParameter(input_analysis_mode = 1,
     p_matrix = input_p_matrix
     p_matrix_2 = input_p_matrix_2
     inter_indels = input_inter_indels
-    twilight = input_twilight
     partial = input_partial
     blocks = input_blocks
     strick_combination = input_strick_combination
@@ -240,12 +237,10 @@ def getSimilarityScore(aa):
 			aa_dict[a] = aa_dict[a] + 1
 		k = max(aa_dict, key=aa_dict.get)
 		similarity = (float(aa_dict[k]) * 100.0) / float(len(aa))
-		if twilight == 'True':
-			if similarity >= 30.0: return 'C'
-			else: return '.'
-		elif twilight == 'False':
-			if similarity >= similarity_threshold: return 'C'
-			else: return '.'
+		for onePair in similarity_threshold:
+			if onePair[0]<=similarity<=onePair[1]:
+				return 'C'
+		return '.'
 	else:
 		pMatrix = pMatrices[p_matrix]
 		c = []
@@ -258,12 +253,10 @@ def getSimilarityScore(aa):
 			for aa_set in aa_sets: m = m + int(aa_dict[aa_set])
 			c.append((float(m)*100.0)/float(len(aa)))
 		similarity = max(c)
-		if twilight == 'True':
-			if similarity >= 30.0: return 'C'
-			else: return '.'
-		elif twilight == 'False':
-			if similarity >= similarity_threshold: return 'C'
-			else: return '.'
+		for onePair in similarity_threshold:
+			if onePair[0]<=similarity<=onePair[1]:
+				return 'C'
+		return '.'
 
 def getConservedBlockProfile(pseudoSeq_lists):
 	consBlkProfile = ''
@@ -612,10 +605,12 @@ def getSimilarityProfile(similarity_list):
 	for i in similarity_list:
 		if i == '-':
 			similarityProfile = similarityProfile + i
-		elif i >= percent_similarity:
-			similarityProfile = similarityProfile + 'H'
-		elif i < percent_similarity:
-			similarityProfile = similarityProfile + '.'
+		else:
+			for onePair in percent_similarity:
+				if onePair[0]<=percent_similarity<=onePair[1]:
+					similarityProfile = similarityProfile + 'H'
+					break
+			else: similarityProfile = similarityProfile + '.'
 	return similarityProfile
 
 def getSimilarityBlocks(similarity_profile):
@@ -1170,13 +1165,12 @@ def informationEnricher(seqList):
 ###################################
 
 def startAnalysis(analysis_mode = 1, 
-				similarity_threshold = 75.0,
-				percent_similarity = 75.0,
+				similarity_threshold = [[75.0,100.0]],
+				percent_similarity = [[75.0,100.0]],
 				percent_accept_gap = 40.0,
 				p_matrix = 'NONE',
 				p_matrix_2 = 'NONE',
 				inter_indels = 3,
-				twilight = 'True',
 				partial = 'True',
 				blocks = 3,
 				strick_combination = 'False',
@@ -1189,7 +1183,7 @@ def startAnalysis(analysis_mode = 1,
 				seqType = "Protein",
 				submitAnyway = 'False'):
 	setParameter(analysis_mode, similarity_threshold, percent_similarity, percent_accept_gap, p_matrix,
-				p_matrix_2, inter_indels, twilight, partial, blocks, strick_combination, combine_with_indel,
+				p_matrix_2, inter_indels, partial, blocks, strick_combination, combine_with_indel,
 				fuse, multidata, output_mode, infile)
 	if multidata == 1:
 		#Validate if the sequence is in FASTA format
