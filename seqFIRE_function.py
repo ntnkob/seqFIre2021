@@ -5,7 +5,7 @@
 ## Program: SeqFIRE: Sequence Feature and Indel Region Extractor                       ##
 ## Version: 2.21 (2021)                                                                ##
 #########################################################################################
-import getopt, sys, os, re, warnings
+import os, re
 from math import log10
 
 ####################################
@@ -39,7 +39,7 @@ strick_combination = 'False'
 combine_with_indel = 'False'
 fuse = 4
 multidata = 1
-output_mode = 2
+output_mode = 3
 output_path = 'app/download/'
 
 def setParameter(input_analysis_mode = 1, 
@@ -55,12 +55,11 @@ def setParameter(input_analysis_mode = 1,
 				input_combine_with_indel = 'False',
 				input_fuse = 4,
 				input_multidata = 1,
-				input_output_mode = 2,
 				input_infile = ''):
     global analysis_mode, similarity_threshold, percent_similarity,\
             percent_accept_gap, p_matrix, p_matrix_2, inter_indels,\
             partial, blocks, strick_combination, combine_with_indel,\
-            fuse, multidata, output_mode, infile
+            fuse, multidata, infile
     analysis_mode = input_analysis_mode
     similarity_threshold = input_similarity_threshold
     percent_similarity = input_percent_similarity
@@ -74,7 +73,6 @@ def setParameter(input_analysis_mode = 1,
     combine_with_indel = input_combine_with_indel
     fuse = input_fuse
     multidata = input_multidata
-    output_mode = input_output_mode
     infile = input_infile
 
 def parseFasta(records):
@@ -1177,21 +1175,20 @@ def startAnalysis(analysis_mode = 1,
 				combine_with_indel = 'False',
 				fuse = 4,
 				multidata = 1,
-				output_mode = 2,
 				infile = 'sequence.txt',
 				inputSeq = '',
 				seqType = "Protein",
 				submitAnyway = 'False'):
 	setParameter(analysis_mode, similarity_threshold, percent_similarity, percent_accept_gap, p_matrix,
 				p_matrix_2, inter_indels, partial, blocks, strick_combination, combine_with_indel,
-				fuse, multidata, output_mode, infile)
+				fuse, multidata, infile)
 	if multidata == 1:
 		#Validate if the sequence is in FASTA format
 		checkSeqResult = checkSeqFormat(inputSeq)
 		if checkSeqResult:
 			handle = parseFasta(inputSeq)
 		else:
-			return (False, checkSeqResult)	
+			return (False, checkSeqResult)
 		
 		#Validate sequence and alignment warnings
 		readinessResult = checkReadiness(handle,seqType)
