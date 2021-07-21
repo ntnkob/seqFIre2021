@@ -15,7 +15,13 @@ function replaceTemplateIndex(value, index) {
     return value.replace(ID_RE, '$1'+index);
 }
 
-$(document).ready(function() {        
+$(document).ready(function() {   
+    $('#submit').click(function (){
+        if ($('#newWindow').prop('checked')==true)
+        {
+            $('#submit').attr('formtarget', '_blank')
+        }
+    });
     // Modal control
     $('#exampleModal').modal('show');
     $('#submitanyway').click(function () {

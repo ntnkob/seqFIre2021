@@ -9,9 +9,16 @@ import seqFIRE_function, os, sys
 def index():
     return render_template('index.html')
 
-@app.route('/version_history')
-def version_history():
-    return render_template('version_history.html', title = "Version history")
+@app.route('/downloadPage')
+def downloadPage():
+    return render_template('downloadPage.html', title = "Download")
+
+@app.route('/download/<filename>')
+def download(filename):
+    try:
+        return send_from_directory(app.config['OUTPUT_PATH'],filename, as_attachment=True)
+    except:
+        return render_template('404.html')
 
 @app.route('/help')
 def help():
@@ -32,7 +39,7 @@ def seq_submit(analysis_mode,co_analysis):
         form = coAnalysisForm()
 
     #Render and process the form
-    if form.is_submitted():
+    if form.validate_on_submit():
 
         print(form.data)
         #If the data is input in copy-paste format
@@ -69,14 +76,14 @@ def seq_submit(analysis_mode,co_analysis):
         strick_combination = form.strick_combination.data if 'strick_combination' in formData else "False"
         combine_with_indel = 'False' if co_analysis == '0' else 'True'
         fuse = form.fuse.data if 'fuse' in formData else 4
-        multidata = 1 if form.multidata.data==None else 2
+        multidata = 1 if form.multidata.data==False else 2
         infile = filename if not form.copypaste_sequence.data else 'sequence.txt'
         seqType = form.seqType.data
         submitAnyway = form.submitAnyway.data
 
         analysis_result = seqFIRE_function.startAnalysis(analysis_mode, similarity_threshold, percent_similarity, 
             percent_accept_gap, p_matrix, p_matrix_2, inter_indels, partial, blocks, strick_combination, combine_with_indel,
-            fuse, multidata, 3, infile, inputSeq, seqType, submitAnyway)
+            fuse, multidata, infile, inputSeq, seqType, submitAnyway)
 
         # if analysis error or warning
         if analysis_result[0] == False and submitAnyway == 'False':
@@ -142,11 +149,6 @@ def seq_submit(analysis_mode,co_analysis):
             return render_template('resultPage.html',optionOutput = optionOutput, descriptionOutput = descriptionOutput, goBackParameters = goBackParameters)
     return render_template('seq_submit.html', title='Submit your sequence', form = form, module_name = module_name)
 
-@app.route('/download/<filename>')
-def download(filename):
-    try:
-        return send_from_directory(app.config['OUTPUT_PATH'],filename, as_attachment=True)
-    except:
-        return render_template('404.html')
+
 
 

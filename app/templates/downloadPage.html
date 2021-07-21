@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block styles %}
+{{ super () }}
+{% endblock %}
+
+
+{% block content %}
+<div class='container-fluid' style="margin-top: 4rem;">
+    <ul>
+        <li>
+            <h5>SeqFIRE prep</h5><br>
+            <p>SeqFIRE prep description</p>
+            <a href="#" download>
+                <img src="static/logo-install-prep.png" width='365' height='115' alt='install prep pic'><br><br>
+            </a>
+        </li>
+        <li>
+            <h5>SeqFIRE standalone</h5><br>
+            <p>SeqFIRE standalone description</p>
+            <a href="download/seqFIRE.py" download>   
+                <img src="static/logo-install-standalone.png" width='365' height='115' alt='install standalone pic'>
+            </a> 
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
