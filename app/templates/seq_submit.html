@@ -2,39 +2,44 @@
 {% import 'bootstrap/form.html' as wtf %}
 
 {% block styles %}
-    {{ super() }}
-    <style> 
-        .paneltext {
-          padding: 50px;
-          text-align: center;
-          background-color: #e5eecc;
-          border: solid 1px #c3c3c3;
-          display: none;
-        }
-        #inputSection {
-            text-align: center;
-            padding: 13px 33px;
-            width: 196px;
-            background: #FFFFFF;
-            border: 2.5px solid #FEE599;
-            box-sizing: border-box;
-            top: -30px;
-            position: absolute;
-            margin-left: 1rem;
+{{ super() }}
+<style>
+    .paneltext {
+        padding: 50px;
+        text-align: center;
+        background-color: #e5eecc;
+        border: solid 1px #c3c3c3;
+        display: none;
+    }
 
-        }
-        #inputsec {
-            border: 2.5px solid #FEE599;
-            margin-top: 3rem;
-            position: relative;
-            margin-bottom: 5rem;
-        }
+    #inputSection {
+        text-align: center;
+        padding: 13px 33px;
+        width: 196px;
+        background: #FFFFFF;
+        border: 2.5px solid #FEE599;
+        box-sizing: border-box;
+        top: -30px;
+        position: absolute;
+        margin-left: 1rem;
 
-        .form-body {
-            padding: 3rem 1rem;
-        }
+    }
+    #copypaste_sequence {
+        height: 150px;
+    }
 
-        /*input[type="checkbox"],
+    #inputsec {
+        border: 2.5px solid #FEE599;
+        margin-top: 3rem;
+        position: relative;
+        margin-bottom: 5rem;
+    }
+
+    .form-body {
+        padding: 3rem 1rem;
+    }
+
+    /*input[type="checkbox"],
         input[type="radio"] {
         appearance: none;
         background-color: #fff;
@@ -50,90 +55,100 @@
         background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADsUlEQVRoQ+2YXU7jMBSFbTcpBSSmgNoXXigboCM20CV0B1NWMGIHMztgB5QdMDtgAwgPUpGoBHSQygMVaioEKg2JRydKqv44ifMDpBJ+tu/9Tu7xzU0oWfBFF5yffAn4qAru7e19I4ScCiGqQojt8/Pzf8i9EBUAvG3bp4SQKqCFEIec84OFEAB4y7LG8G7FOef8e+YFAN40zVl4R4Ou68Wzs7NBZi3kwcPzsntGKW1cXFwcZ1IA4F9fX6VP3hMjhGi2Wq39zAkA/HA4DIR3RXRarVYlUwJ2dna+FQoFFXhHw+XlJc2MAMDrun5KKZV6fvYeoJVeXV0dZEKAB+/1eYWXIzdNs3Zzc/P5XQjwmqYp24YQYhBCau12+++nvwcAn8vlosATtM92u33sVenTLAR4xlgkeLTO6+vr/UmLKQuoVCq7lNK6EOLk9vbWKV/cBXgMZhE8j1Qc1oHvIwsAvJuw6HkwrgjACyGiwju+l+UMrQDg3YSA95ZBKZUGDKoK4CenyggVbHQ6nbHvlSsAeDfhJPxYBGNMWQTgJVNlqAb4/u7ubsr3SgK2trZ23Usmg/didHRdr876cpYK8G9vb87HSCjxxAZKKdc0bc73oQIATymFT4PgvTg8n8/7JgH8aDSK6nnENoQQtW63G9gw5u4A4CcurOoD40tLS3MiAB82VQYkaHS7XanvfSsAeMmFVRXRvL+/H3sV8IpTpSz+VKwggHEF1tfXMQmi126rEkv2wSonQogi3pgxY/Hl5eVA30srUC6Xj9ykCfgTH3V8//DwoPyiHFegXC73FS9tYkq/AEKIRq/XC/W9tAKlUukHIaT5bnThgZu9Xs+33/sdn+pCpVLpJz4UwnOlvoNbllXr9/tTc45Klrk2urm5eUQIwQX8qGVYllU1DMP50xZ1SWehjY2NI/gxarA4+xlj9cfHxz9xzuKM7zBXLBY/ohKHhmE4vwjjrsBpdG1t7T1bKx8MBs7vwSQrdJyGiHe4EwZjLLbvpW006Cmsrq6mWgl82T09PcX2fWQBOAARKVXi8Pn5OZHvYwnAoZWVlaQi+MvLS2LfxxbgiYjZYjHnVIfDYax+72fx0EssO1goFCJXwrbt+mg0SsX3iSrgHc7n88oiMJ6Yppma71MRgCC6rquIwH/MVH2fmgAEyuVyQS3W0DQtdd+nKsAT4dNi65Zlpe771AUgIGNs1k6/bNv+nWRMUDkbqwsFBPZE4MMo8seJCvDsnrQFxGFIdOZLQKLHl8Lh/51VgECHxbTCAAAAAElFTkSuQmCC")
         }*/
 
-        .form-control {
-            display: block;
-            width: 100%;
-            height: calc(1.5em + .75rem + 2px);
-            padding: .375rem .75rem;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #495057;
-            background-color: #fff9e9;
-            background-clip: padding-box;
-            border: 1px solid #ffc000;
-            border-radius: .25rem;
-            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-        }
-        /*input:-internal-autofill-selected {
+    .form-control {
+        display: block;
+        width: 100%;
+        height: calc(1.5em + .75rem + 2px);
+        padding: .375rem .75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff9e9;
+        background-clip: padding-box;
+        border: 1px solid #ffc000;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    /*input:-internal-autofill-selected {
             appearance: menulist-button;
             background-color: #fff0c5 !important;
             background-image: none !important;
             color: -internal-light-dark(black, white) !important;
         }*/
 
-        .form-control:focus {
-            border-color: #FFC000;
-            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #FFC000;
-        }
+    .form-control:focus {
+        border-color: #FFC000;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #FFC000;
+    }
 
-        .form-control:-webkit-autofill,
-        .form-control:-webkit-autofill:hover, 
-        .form-control:-webkit-autofill:focus, 
-        .form-control:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0px 1000px #fff9e9 inset;
-        }
+    .form-control:-webkit-autofill,
+    .form-control:-webkit-autofill:hover,
+    .form-control:-webkit-autofill:focus,
+    .form-control:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0px 1000px #fff9e9 inset;
+    }
 
-        .btn-primary {
-            color: #fff;
-            background-color: #FFC000;
-            border-color: #FFC000;
-        }
+    .btn-primary {
+        color: #fff;
+        background-color: #FFC000;
+        border-color: #FFC000;
+    }
 
-        .btn-primary:hover {
-            color: #fff;
-            background-color: #ce9a00;
-            border-color: #ce9a00;
-        }
-        a {
-            color: #ffc000;
-        }
+    .btn-primary:hover {
+        color: #fff;
+        background-color: #ce9a00;
+        border-color: #ce9a00;
+    }
 
-        a:link {
-            color: #ffc000;
-        }
-        
-        a:hover {
-            color: #bd8e00;
-        }
-        
-    </style>
+    a {
+        color: #ffc000;
+    }
+
+    a:link {
+        color: #ffc000;
+    }
+
+    a:hover {
+        color: #bd8e00;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="media"  style="margin-top: 4rem;">
+<div class="media" style="margin-top: 4rem;">
     {% if module_name == "Indel module" %}
-    <img src="/static/logo-indel.png" width='60' height='60' class="align-self-center mr-3"alt="indelpic">
+    <img src="/static/logo-indel.png" width='60' height='60' class="align-self-center mr-3" alt="indelpic">
     {% elif module_name == "Conservation block module" %}
     <img src="/static/logo-conserved.png" width='60' height='60' class="align-self-center mr-3" alt="conservedpic">
     {% else %}
     <img src="/static/logo-co.png" width='60' height='60' class="align-self-center mr-3" alt="copic">
     {% endif %}
-    
+
     <div class="media-body">
         <h1>{{ module_name }}<br></h1>
     </div>
 </div>
-<div class ='container-fluid' id="inputsec">
-    <h5 id='inputSection'>Input section</h5>
+
+<div class='container-fluid' id="inputsec">
+    <div class="row">
+        <div class="col-11">
+            <h5 id='inputSection'>Input section</h5>
+        </div>
+        <div class="col-1">
+            <a href="javascript:location.reload();" style="top: -30px; position: absolute;">Reset page</a>
+        </div>
+    </div>
     <div class="form-body">
-        {{ wtf.render_form(form, id="seqForm", form_type="horizontal") }}   
+        {{ wtf.render_form(form, id="seqForm", form_type="horizontal") }}
         <input class="btn btn-primary btn-md" id="submit" name="submit" form="seqForm" type="submit" value="FIRE!"><br>
         <input type="checkbox" id="newWindow" name="newWindow" value="newWindow">
         <label for="newWindow"> Output to a new window</label><br>
     </div>
     {% if error_messages %}
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -143,14 +158,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                {% for oneMessage in error_messages %}
+                    {% for oneMessage in error_messages %}
                     {{ oneMessage }}<br>
-                {% endfor %}
+                    {% endfor %}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Go back</button>
-                    {% if not fatal %} 
-                    <button type="submit" id="submitanyway" class="btn btn-primary" form="seqForm">Submit anyway</button>
+                    {% if not fatal %}
+                    <button type="submit" id="submitanyway" class="btn btn-primary" form="seqForm">Submit
+                        anyway</button>
                     {% endif %}
                 </div>
             </div>
@@ -162,6 +178,6 @@
 {% endblock %}
 
 {% block scripts %}
-    {{ super() }}
-    <script src="/static/seqSubmitFunction.js"></script>
+{{ super() }}
+<script src="/static/seqSubmitFunction.js"></script>
 {% endblock %}
