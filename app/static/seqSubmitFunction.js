@@ -8,7 +8,7 @@ function buildInfoIcon(inputID,infoMessage)
 }
 function buildHyperlink(hyperlinkID,hyperlinkWord)
 {
-    var hyperlinkHTML = `<a href="#" class="text-decoration-none" id="${hyperlinkID}">${hyperlinkWord}</a>`
+    var hyperlinkHTML = `<a href="#" class="text-decoration-none" id="${hyperlinkID}" style = "font-size: 16px;">${hyperlinkWord}</a>`
     return hyperlinkHTML;
 }
 function replaceTemplateIndex(value, index) {
@@ -42,6 +42,7 @@ $(document).ready(function() {
     $("label[for=similarity_threshold]").append(buildInfoIcon("similarityThreshold","Message for indel similarity threshold"));
     $("label[for=similarity_threshold]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addRange"></i>`);
     $("#addRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delRange"></i>`);
+    $("label[for=similarity_threshold]").append('<br>'+buildHyperlink("setParamIndelButton","Set all parameter values to default"));
     $("#delRange").after(`<br><p id="statusMessage"></p>`);
     var fieldCount = $("form>fieldset").first().children().length - 1 //The first label is counted, so we have to subtract it out
     $('#addRange').click(function () {
@@ -90,6 +91,7 @@ $(document).ready(function() {
     $("label[for=percent_similarity]").append(buildInfoIcon("percentSimilarity","Message for percent similarity"));
     $("label[for=percent_similarity]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addConservedRange"></i>`);
     $("#addConservedRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delConservedRange"></i>`);
+    $("label[for=percent_similarity]").append('<br>'+buildHyperlink("setParamConservedButton","Set all parameter values to default"));
     $("#delConservedRange").after(`<br><p id="conservedStatusMessage"></p>`);
     var conservedFieldCount = $("form>fieldset").last().children().length - 1 //The first label is counted, so we have to subtract it out
     $('#addConservedRange').click(function () {
@@ -152,6 +154,24 @@ $(document).ready(function() {
         $('input[name=seqType]').prop("checked",false);
     });
 
+    $(document).on('click','#setParamIndelButton', function() {
+        $('#similarity_threshold-0-start_range').val("75");
+        $('#similarity_threshold-0-end_range').val("100");
+        $('select[name=p_matrix]').val("NONE")
+        $('#inter_indels').val("3");
+        $('input[name=partial][value=False]').prop("checked",true);
+    });
+
+    $(document).on('click','#setParamConservedButton', function() {
+        $('#percent_similarity-0-start_range').val("75");
+        $('#percent_similarity-0-end_range').val("100");
+        $('select[name=p_matrix_2]').val("NONE")
+        $('#percent_accept_gap').val("40");
+        $('#fuse').val("3");
+        $('#blocks').val("3");
+        $('input[name=strick_combination][value=False]').prop("checked",true);
+    });
+    
     $(document).on('click','#exampleSeqButton', function() {
         var exampleSequence = `>sp|P69905|HBA_HUMAN Hemoglobin subunit alpha OS=Homo sapiens GN=HBA1 PE=1 SV=2
 MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHGKKVADALTNAVAHVDDMPNALSALSDLHAHKLRVDPVNFKLLSHCLLVTLAAHLPAEFTPAVHASLDKFLASVSTVLTSKYR
