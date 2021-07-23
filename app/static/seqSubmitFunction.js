@@ -42,7 +42,7 @@ $(document).ready(function() {
     $("label[for=similarity_threshold]").append(buildInfoIcon("similarityThreshold","Message for indel similarity threshold"));
     $("label[for=similarity_threshold]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addRange"></i>`);
     $("#addRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delRange"></i>`);
-    $("label[for=similarity_threshold]").append('<br>'+buildHyperlink("setParamIndelButton","Set all parameter values to default"));
+    $("label[for=similarity_threshold]").after('<br>'+buildHyperlink("setParamIndelButton","Set all parameter values to default"));
     $("#delRange").after(`<br><p id="statusMessage"></p>`);
     var fieldCount = $("form>fieldset").first().children().length - 1 //The first label is counted, so we have to subtract it out
     $('#addRange').click(function () {
@@ -91,7 +91,7 @@ $(document).ready(function() {
     $("label[for=percent_similarity]").append(buildInfoIcon("percentSimilarity","Message for percent similarity"));
     $("label[for=percent_similarity]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addConservedRange"></i>`);
     $("#addConservedRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delConservedRange"></i>`);
-    $("label[for=percent_similarity]").append('<br>'+buildHyperlink("setParamConservedButton","Set all parameter values to default"));
+    $("label[for=percent_similarity]").after('<br>'+buildHyperlink("setParamConservedButton","Set all parameter values to default"));
     $("#delConservedRange").after(`<br><p id="conservedStatusMessage"></p>`);
     var conservedFieldCount = $("form>fieldset").last().children().length - 1 //The first label is counted, so we have to subtract it out
     $('#addConservedRange').click(function () {

@@ -6,22 +6,20 @@
 
 {% block content %}
 <div class='container-fluid' style="margin-top: 4rem;">
-    <ul>
-        <li>
-            <h5>SeqFIRE prep</h5><br>
-            <p>SeqFIRE prep description</p>
-            <a href="#" download>
-                <img src="static/logo-install-prep.png" width='365' height='115' alt='install prep pic'><br><br>
-            </a>
-        </li>
-        <li>
-            <h5>SeqFIRE standalone</h5><br>
-            <p>SeqFIRE standalone description</p>
-            <a href="download/seqFIRE.py" download>   
-                <img src="static/logo-install-standalone.png" width='365' height='115' alt='install standalone pic'>
-            </a> 
-        </li>
-    </ul>
+    <h3>SeqFIRE prep</h3><br>
+    <p><b>SeqFIRE prep</b> is for users who want to run SeqFIRE with a large amount of data (several sequence alignments). 
+        We provide a batch mode analysis option for both indel region and conserved block modules. 
+        In order to use the batch mode, first prepare the input files in a SeqFIRE compatible format. 
+        For this, we provide a small Python script called SeqFIREprep. SeqFIREprep will merge multiple alignment files into a single large input file. 
+        The script can also be used for subsequent separation of the results into separate output files for each alignment.</p>
+    <a href="#" download>
+        <img src="static/logo-install-prep.png" width='365' height='115' alt='install prep pic'><br><br>
+    </a>
+    <h3>SeqFIRE standalone</h3><br>
+    <p><b>SeqFIRE standalone</b> is for users who want to run SeqFIRE on a standalone computer or a local server.</p>
+    <a href="download/seqFIRE.py" download>   
+        <img src="static/logo-install-standalone.png" width='365' height='115' alt='install standalone pic'>
+    </a> 
 </div>
 {% endblock %}
 
