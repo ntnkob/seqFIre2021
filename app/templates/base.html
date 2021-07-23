@@ -41,6 +41,15 @@
             border-radius: 8px
         }
 
+        .navbar {
+            padding: 0;
+            
+        }
+
+        .navbar-brand {
+            padding: 0;
+        }
+
     </style>
     {% endblock %}
 
@@ -54,9 +63,13 @@
     <!-- Navigation bar -->
     <nav class="navbar navbar-light" style="background-color: #ffc000;">
         <a href="{{ url_for('index') }}" class='navbar-brand'>
-            <img src='/static/logo.jpg' width='120' height='50' alt="seqFIRE Logo">
+            <div style="height: 60px; width: 135.46px; background-color: #FFF2CC; display: flex;
+            justify-content: center;
+            align-items: center;">
+            <img src='/static/logo_new.png' height='50' alt="seqFIRE Logo">
+            </div>
         </a>
-        <ul class="nav nav-pills my-2">
+        <ul class="nav nav-pills my-2" style="margin-right: 10px;">
             {{ render_nav_item('index', 'Home', use_li = True) }}
             {{ render_nav_item('downloadPage', "Download", use_li = True) }}
             {{ render_nav_item('help', "Help", use_li = True) }}
