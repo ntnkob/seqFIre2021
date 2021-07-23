@@ -43,7 +43,6 @@ $(document).ready(function() {
     $("label[for=similarity_threshold]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addRange"></i>`);
     $("#addRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delRange"></i>`);
     $("label[for=similarity_threshold]").after(buildHyperlink("setParamIndelButton","Set all parameter values to default"));
-    $("#delRange").after(`<br><p id="statusMessage"></p>`);
     var fieldCount = $("form>fieldset").first().children().length - 1 //The first label is counted, so we have to subtract it out
     $('#addRange').click(function () {
         if (fieldCount<5) 
@@ -61,11 +60,10 @@ $(document).ready(function() {
                 $item.attr('name', $item.attr('name').replace("threshold-"+(fieldCount-1).toString(),"threshold-"+(fieldCount).toString()));
             });
             fieldCount = fieldCount+1
-            $("#statusMessage").text("")
             $("form>fieldset").first().append("<fieldset>"+newForm.html()+"</fieldset>")
         }
         else {
-            $("#statusMessage").text("Full row")
+            alert("Full row")
         }
     });
 
@@ -73,12 +71,10 @@ $(document).ready(function() {
         if (fieldCount>1) {
             $("form>fieldset").first().children().last().remove()
             fieldCount = fieldCount-1
-            $("#statusMessage").text("")
         }
         else {
-            $("#statusMessage").text("At least one range is required")
+            alert("At least one range is required")
         }
-        console.log("Fieldcount = "+fieldCount.toString())
     });
 
     $("label[for=p_matrix]").append(buildInfoIcon("pMatrix","Message for indel substitute group"));
@@ -92,7 +88,6 @@ $(document).ready(function() {
     $("label[for=percent_similarity]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addConservedRange"></i>`);
     $("#addConservedRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delConservedRange"></i>`);
     $("label[for=percent_similarity]").after(buildHyperlink("setParamConservedButton","Set all parameter values to default"));
-    $("#delConservedRange").after(`<br><p id="conservedStatusMessage"></p>`);
     var conservedFieldCount = $("form>fieldset").last().children().length - 1 //The first label is counted, so we have to subtract it out
     $('#addConservedRange').click(function () {
         if (conservedFieldCount<5) 
@@ -110,11 +105,10 @@ $(document).ready(function() {
                 $item.attr('name', $item.attr('name').replace("similarity-"+(conservedFieldCount-1).toString(),"similarity-"+(conservedFieldCount).toString()));
             });
             conservedFieldCount = conservedFieldCount+1
-            $("#conservedStatusMessage").text("")
             $("form>fieldset").last().append("<fieldset>"+newForm.html()+"</fieldset>")
         }
         else {
-            $("#conservedStatusMessage").text("Full row")
+            alert("Full row")
         }
     });
 
@@ -122,12 +116,10 @@ $(document).ready(function() {
         if (conservedFieldCount>1) {
             $("form>fieldset").last().children().last().remove()
             conservedFieldCount = conservedFieldCount-1
-            $("#conservedStatusMessage").text("")
         }
         else {
-            $("#conservedStatusMessage").text("At least one range is required")
+            alert("At least one range is required")
         }
-        console.log("Fieldcount = "+conservedFieldCount.toString())
     });
 
     $("label[for=p_matrix_2]").append(buildInfoIcon("pMatrix2","Message for conservation block substitute group"));

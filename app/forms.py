@@ -28,10 +28,10 @@ class lessThan(object):
 ''' Real form  '''
 class rangeForm(Form):
     start_range = DecimalField("Enter start range here",
-                                validators = [InputRequired("Start range must be input"), lessThan('end_range')],
+                                validators = [InputRequired("Start range must be input"), lessThan('end_range'), NumberRange(min=0, max=100, message="The range must be 0 to 100")],
                                 places = 1)
     end_range = DecimalField("Enter end range here",
-                                validators = [InputRequired("End range must be input")],
+                                validators = [InputRequired("End range must be input"), NumberRange(min=0, max=100, message="The range must be 0 to 100")],
                                 places = 1)
 
 class seqForm(FlaskForm):

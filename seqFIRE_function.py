@@ -605,7 +605,7 @@ def getSimilarityProfile(similarity_list):
 			similarityProfile = similarityProfile + i
 		else:
 			for onePair in percent_similarity:
-				if onePair[0]<=percent_similarity<=onePair[1]:
+				if onePair[0]<=i<=onePair[1]:
 					similarityProfile = similarityProfile + 'H'
 					break
 			else: similarityProfile = similarityProfile + '.'
