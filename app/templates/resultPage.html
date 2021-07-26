@@ -66,9 +66,9 @@
             <input type=checkbox id={{ oneButton[0] }}>      <label for={{ oneButton[0] }}> {{ oneButton[1] }}</label><br>
             <div id={{ oneButton[0] }}div class=resultdiv>
                 <pre>
-                {% for oneLine in oneButton[2] %}
-                    {{ oneLine }}
-                {% endfor %}
+                {% for oneLine in oneButton[2] -%}
+                <br>{{ oneLine }}
+                {%- endfor %}
                 </pre>
                 <a href="{{ url_for('download', filename = oneButton[3]) }}"><button class="btn btn-primary">Download {{ oneButton[3] }}</button></a>
             </div>
