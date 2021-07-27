@@ -3,7 +3,7 @@ function buildInfoIcon(inputID,infoMessage)
     var iconID = inputID+'Icon'
     var panelID = inputID+'Panel'
     var infoHTML = `  <i class="bi bi-question-circle-fill" style="font-size: 16px; color:#FFD700"; id="${iconID}"></i>`;
-    var panelHTML = `<div class='paneltext' id="${panelID}">${infoMessage}</div>`;
+    var panelHTML = `<div class='paneltext' style="padding: 6px; font-size: 16px;" id="${panelID}">${infoMessage}</div>`;
     return infoHTML+'\n'+panelHTML;
 }
 function buildHyperlink(hyperlinkID,hyperlinkWord)
@@ -39,7 +39,7 @@ $(document).ready(function() {
     $("label[for=file_sequence]").append(buildInfoIcon("fileUpload","Message for file uploading"));
 
     // Indel forms
-    $("label[for=similarity_threshold]").append(buildInfoIcon("similarityThreshold","Message for indel similarity threshold"));
+    $("label[for=similarity_threshold]").append(buildInfoIcon("similarityThreshold","The percentage sequence similarity required for an alignment position to be included in the consensus"));
     $("label[for=similarity_threshold]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addRange"></i>`);
     $("#addRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delRange"></i>`);
     $("label[for=similarity_threshold]").after(buildHyperlink("setParamIndelButton","Set all parameter values to default"));
@@ -77,14 +77,14 @@ $(document).ready(function() {
         }
     });
 
-    $("label[for=p_matrix]").append(buildInfoIcon("pMatrix","Message for indel substitute group"));
+    $("label[for=p_matrix]").append(buildInfoIcon("pMatrix","The amino acid substitution model for scoring sequence similarity"));
 
-    $("label[for=inter_indels]").append(buildInfoIcon("interIndel","Message for inter indels"));
+    $("label[for=inter_indels]").append(buildInfoIcon("interIndel","Minimum number of consensus sites required between two indels"));
 
-    $("label[for=partial]").append(buildInfoIcon("partial","Message for partial"));
+    $("label[for=partial]").append(buildInfoIcon("partial","Searching in the terminal ends of the alignment to find incomplete sequence(s) (threshold for partial) treatment = 40%)"));
 
     // Conservation block form
-    $("label[for=percent_similarity]").append(buildInfoIcon("percentSimilarity","Message for percent similarity"));
+    $("label[for=percent_similarity]").append(buildInfoIcon("percentSimilarity","The percentage sequence similarity required for an alignment position to be included in the consensus"));
     $("label[for=percent_similarity]").append(`  <i class="bi bi-plus-square-fill style="font-size: 16px; color:#FFD700"; id="addConservedRange"></i>`);
     $("#addConservedRange").after(`  <i class="bi bi-trash-fill style="font-size: 16px; color:#FFD700"; id="delConservedRange"></i>`);
     $("label[for=percent_similarity]").after(buildHyperlink("setParamConservedButton","Set all parameter values to default"));
@@ -122,15 +122,15 @@ $(document).ready(function() {
         }
     });
 
-    $("label[for=p_matrix_2]").append(buildInfoIcon("pMatrix2","Message for conservation block substitute group"));
+    $("label[for=p_matrix_2]").append(buildInfoIcon("pMatrix2","The amino acid substitution model for scoring sequence similarity (DNA sequence: NONE)"));
 
-    $("label[for=percent_accept_gap]").append(buildInfoIcon("percent_accept_gap","Message for percent accept gap"));
+    $("label[for=percent_accept_gap]").append(buildInfoIcon("percent_accept_gap","A cut off to tell the program what percentage of gaps (ratio of gaps per column) should be retained or discarded in gapped positions in the conserved block"));
 
-    $("label[for=fuse]").append(buildInfoIcon("fuse","Message for minimum size of conserved block"));
+    $("label[for=fuse]").append(buildInfoIcon("fuse","The minimum number of adjacent positions in the alignment used as a criterion to determine a conserved block"));
 
-    $("label[for=blocks]").append(buildInfoIcon("blocks","Message for maximum size of non-conserved block"));
+    $("label[for=blocks]").append(buildInfoIcon("blocks","The maximum number of poorly conserved (absent from consensus) alignment that are allowed to be part of a conserved block"));
 
-    $("label[for=strick_combination]").append(buildInfoIcon("strickCombination","Message for combination of conserved profiles"));
+    $("label[for=strick_combination]").append(buildInfoIcon("strickCombination","The resulting profiles, similarity and entropy, can be combined"));
         
     /* Creating event handling */
     $(document).on('click','#multiDataIcon',function() {
