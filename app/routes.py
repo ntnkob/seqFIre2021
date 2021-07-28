@@ -78,7 +78,7 @@ def seq_submit(analysis_mode,co_analysis):
         fuse = form.fuse.data if 'fuse' in formData else 4
         multidata = 1 if form.multidata.data==False else 2
         infile = filename if not form.copypaste_sequence.data else 'sequence.txt'
-        seqType = form.seqType.data
+        seqType = form.seqType.data if 'seqType' in form.data else "Protein"
         submitAnyway = form.submitAnyway.data
 
         analysis_result = seqFIRE_function.startAnalysis(analysis_mode, similarity_threshold, percent_similarity, 
@@ -96,7 +96,7 @@ def seq_submit(analysis_mode,co_analysis):
             informationDict['Module'] = module_name
             informationDict['Mode'] = "Single mode" if multidata == 1 else "Batch mode"
             informationDict['File name'] = filename if not form.copypaste_sequence.data else '-'
-            informationDict['Sequence Type'] = form.seqType.data
+            informationDict['Sequence Type'] = seqType
             informationDict['Count'] = analysis_result[2][0]
             informationDict['Length'] = analysis_result[2][1]
             optionOutput = {"Information": informationDict}
@@ -139,7 +139,10 @@ def seq_submit(analysis_mode,co_analysis):
                 conservedBlockData = analysis_result[1][0]
                 conservedBlockFilename = analysis_result[1][1]
 
-                descriptionOutput['Conserved Block Module'] = zip(conservedBlockButtonName, conservedBlockDescription, conservedBlockData, conservedBlockFilename)
+                if combine_with_indel=='False':
+                    descriptionOutput['Conserved Block Module'] = zip(conservedBlockButtonName, conservedBlockDescription, conservedBlockData, conservedBlockFilename)
+                else:
+                    descriptionOutput['Co-analysis'] = zip(conservedBlockButtonName, conservedBlockDescription, conservedBlockData, conservedBlockFilename)
 
             goBackParameters = [analysis_mode, int(co_analysis)]
             print(optionOutput)

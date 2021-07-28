@@ -954,17 +954,17 @@ def conservedBlockExtraction(handle):
 		f3 = open(r'%s%s_2_short.fasta' % (output_path, filename[0]), 'w')
 		for out3 in output_conserved_3: f3.write('\n' + str(out3))
 		f3.close()
-		filenameList.append('%s.short.fasta' % (filename[0]))
+		filenameList.append('%s_2_short.fasta' % (filename[0]))
 		### Writing output4: Alignment in NESXUS format + Conserved block profile
 		f4 = open(r'%s%s_2.nex' % (output_path, filename[0]), 'w')
 		for out4 in output_conserved_4: f4.write('\n' + str(out4))
 		f4.close()
-		filenameList.append('%s.nex' % (filename[0]))
+		filenameList.append('%s_2.nex' % (filename[0]))
 		### Writing output4: Alignment in NESXUS format + Conserved block profile
 		f5 = open(r'%s%s_2_short.nex' % (output_path, filename[0]), 'w')
 		for out5 in output_conserved_5: f5.write('\n' + str(out5))
 		f5.close()
-		filenameList.append('%s.short.nex' % (filename[0]))
+		filenameList.append('%s_2_short.nex' % (filename[0]))
 
 	if output_mode==1: return returnList
 	if output_mode==2: return filenameList

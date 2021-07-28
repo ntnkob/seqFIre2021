@@ -57,16 +57,12 @@ class seqForm(FlaskForm):
     #Single or batch mode - RadioField -> multidata
     copypaste_sequence = TextAreaField("Enter Multiple Sequence Alignment in FASTA format",
                                     validators=[Optional()],
-                                    render_kw = {"placeholder":"Copy your sequence and paste them into this field\nAlso select sequence type (DNA/Amino acid) down below"})
+                                    render_kw = {"placeholder":"Copy your sequence and paste them into this field"})
     file_sequence = FileField("Or upload file",
                                 validators=[Optional()],
                                 description = 'Upload your sequence in FASTA format into this field')
 
     multidata = BooleanField("Multiple files")
-    #DNA or Protein sequence
-    seqType = RadioField("Sequence type*",
-                        validators = [InputRequired("Specify the input sequence type")],
-                        choices = [("DNA","DNA"), ("Protein","Amino acid")])
     
     submitAnyway = HiddenField("Used for submit anyway from modal",
                                 id = "submitAnyway",
@@ -102,12 +98,17 @@ class indelForm(seqForm):
                             choices = [("True","Yes"), ("False","No")])
     
 class conservedBlockForm(seqForm):  
+    #DNA or Protein sequence
+    seqType = RadioField("Sequence type*",
+                        validators = [InputRequired("Specify the input sequence type")],
+                        choices = [("DNA","DNA"), ("Protein","Amino acid")])
+
     #similarity_threshold and percent_similarity is the same parameter but for indel and conservation block module respectively
     percent_similarity = FieldList(FormField(rangeForm),min_entries=1, max_entries=20)
 
     #p_matrix and p_matrix_2 is the same parameter but for indel and conservation block module respectively
     p_matrix_2 = SelectField("Select your sequence substitute group",
-                        validators = [InputRequired("Choose one sequence substitute group")],
+                        validators = [Optional()],
                         choices = ['NONE','PAM60','PAM250','BLOSUM40','BLOSUM62','BLOSUM80'])
 
     #percent_accept_gap
@@ -131,7 +132,6 @@ class conservedBlockForm(seqForm):
 
 class coAnalysisForm(seqForm):
     ## This part is from indel region module ##
-
     similarity_threshold = FieldList(FormField(rangeForm),min_entries=1, max_entries=20)
 
     p_matrix = SelectField("Substitute group for indel module",
