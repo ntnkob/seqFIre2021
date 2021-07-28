@@ -94,8 +94,8 @@ def parseFasta(records):
 	for r in rec:
 		if len(r[0]) > title_length: title_length = len(r[0])
 	
-	if title_length < 16:
-		for r in rec: r[0] = str(r[0]) + ' '*(16 - len(r[0])) + ': '
+	if title_length < 23:
+		for r in rec: r[0] = str(r[0]) + ' '*(23 - len(r[0])) + ': '
 	else:
 		for r in rec: r[0] = str(r[0]) + ' '*(title_length - len(r[0])) + ': '
 	return rec
@@ -807,7 +807,8 @@ def genNexusWithConservedProfile(handle, conserved_blocks, simple_indel_position
 			 MATRIX''' % (len(handle),len(handle[0][1]))
 
 	output_conserved_4.append(head)
-
+	for oneHandle in handle:
+		print(oneHandle)
 	r = getRuler(len(handle[0][0]), len(handle[0][1])).split('\n')
 	ruler = '[ ' + r[0][1:] + ' '*(len(r[1])-len(r[0])) + ']\n[ ' + r[1][1:] + ']'
 	output_conserved_4.append(ruler)
