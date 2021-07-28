@@ -21,6 +21,7 @@
             padding-bottom: 4rem;
             display: flex;
             flex-direction: column;
+            background-color: #FFF9E7;
         }
 
         footer {
@@ -41,15 +42,6 @@
             border-radius: 8px
         }
 
-        .navbar {
-            padding: 0;
-            
-        }
-
-        .navbar-brand {
-            padding: 0;
-        }
-
     </style>
     {% endblock %}
 
@@ -63,11 +55,7 @@
     <!-- Navigation bar -->
     <nav class="navbar navbar-light" style="background-color: #ffc000;">
         <a href="{{ url_for('index') }}" class='navbar-brand'>
-            <div style="height: 60px; width: 135.46px; background-color: #FFF2CC; display: flex;
-            justify-content: center;
-            align-items: center;">
-            <img src='/static/logo_new.png' height='50' alt="seqFIRE Logo">
-            </div>
+            <img src='/static/LOGO1.png' height='50' alt="seqFIRE Logo">
         </a>
         <ul class="nav nav-pills my-2" style="margin-right: 10px;">
             {{ render_nav_item('index', 'Home', use_li = True) }}
@@ -105,7 +93,7 @@
             <div class='col-auto' id="footer-right">
                 <h5 class='text-right'>Contact</h5>
                 <p class="text-right" style="font-size: 12px;">
-                    email<br>
+                    email: pravech.aja@mahidol.ac.th<br>
                     &copy; Copyright 2011 by SeqFIRE development team
             </div>
         </div>

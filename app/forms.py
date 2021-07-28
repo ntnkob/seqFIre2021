@@ -84,7 +84,7 @@ class seqForm(FlaskForm):
 
 class indelForm(seqForm):
     #similarity_threshold and percent_similarity is the same parameter but for indel and conservation block module respectively
-    similarity_threshold = FieldList(FormField(rangeForm), min_entries=1, max_entries=20)
+    similarity_threshold = FieldList(FormField(rangeForm), min_entries=1, max_entries=20, label="Conservation Threshold")
 
     #p_matrix and p_matrix_2 is the same parameter but for indel and conservation block module respectively
     p_matrix = SelectField("Amino acid substitute group*",
