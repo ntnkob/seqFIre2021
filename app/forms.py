@@ -25,7 +25,26 @@ class lessThan(object):
 
             raise ValidationError(message % d)
 
-''' Real form  '''
+''' Prep form  '''
+class seqPrepForm(Form):
+    copypaste_sequence = TextAreaField("Enter Multiple Sequence Alignment in FASTA format",
+                            validators=[Optional()])
+    file_sequence = FileField("Or upload file",
+                            validators = [Optional()])
+    def validate(self):
+        if not super(seqPrepForm, self).validate():
+            return False
+        if not self.copypaste_sequence.data and not self.file_sequence.data:
+            msg = 'Please enter a sequence'
+            self.copypaste_sequence.errors.append(msg)
+            self.file_sequence.errors.append(msg)
+            return False
+        return True
+
+class prepForm(FlaskForm):
+    prepSeq = FieldList(FormField(seqPrepForm), min_entries = 1, max_entries = 100)
+
+''' Analysis form '''
 class rangeForm(Form):
     start_range = DecimalField("Enter start range here",
                                 validators = [InputRequired("Start range must be input"), lessThan('end_range'), NumberRange(min=0, max=100, message="The range must be 0 to 100")],

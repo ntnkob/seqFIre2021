@@ -1,6 +1,6 @@
 from flask import render_template, send_from_directory
 from app import app
-from app.forms import coAnalysisForm, indelForm, conservedBlockForm
+from app.forms import coAnalysisForm, indelForm, conservedBlockForm, prepForm
 from werkzeug.utils import secure_filename
 import seqFIRE_function, os, sys
 
@@ -149,6 +149,12 @@ def seq_submit(analysis_mode,co_analysis):
             return render_template('resultPage.html',optionOutput = optionOutput, descriptionOutput = descriptionOutput, goBackParameters = goBackParameters)
     return render_template('seq_submit.html', title='Submit your sequence', form = form, module_name = module_name)
 
-
+@app.route('/webPrep', methods = ['GET','POST'])
+def webPrep():
+    formprep = prepForm()
+    if formprep.validate_on_submit():
+        print(formprep.data)
+        return render_template('prepPage.html')
+    return render_template('prep_submit.html', title='Prepare your sequence', form = formprep)
 
 
