@@ -102,7 +102,7 @@ def seq_submit(analysis_mode,co_analysis):
             optionOutput = {"Information": informationDict}
             descriptionOutput = {}
 
-            if analysis_mode==1:
+            if analysis_mode==1 or combine_with_indel=='True':
                 indelParameterDict = {}
                 indelParameterDict['Amino acid conservation threshold']  = similarity_threshold
                 indelParameterDict['Amino acid substitute group'] = p_matrix
@@ -110,17 +110,18 @@ def seq_submit(analysis_mode,co_analysis):
                 indelParameterDict['Partial treatment'] = partial
                 optionOutput['Parameters (Indel Region Module)'] = indelParameterDict
 
-                indelButtonName = ['indel_output_1','indel_output_2', 'indel_output_3', 'indel_output_4']
-                indelDescription = ['Alignment with Indel Annotation',
-                                   'Indel List',
-                                   'Indel Matrix',
-                                   'Marked Indel Alignment in NEXUS format']
-                indelData = analysis_result[1][0]
-                indelFilename = analysis_result[1][1]
+                if combine_with_indel=='False':
+                    indelButtonName = ['indel_output_1','indel_output_2', 'indel_output_3', 'indel_output_4']
+                    indelDescription = ['Alignment with Indel Annotation',
+                                    'Indel List',
+                                    'Indel Matrix',
+                                    'Marked Indel Alignment in NEXUS format']
+                    indelData = analysis_result[1][0]
+                    indelFilename = analysis_result[1][1]
 
-                descriptionOutput['Indel Region Module'] = zip(indelButtonName, indelDescription, indelData, indelFilename)
+                    descriptionOutput['Indel Region Module'] = zip(indelButtonName, indelDescription, indelData, indelFilename)
 
-            if analysis_mode==2:
+            if analysis_mode==2 or combine_with_indel=='True':
                 conservedBlockParameterDict = {}
                 conservedBlockParameterDict['DNA or amino acid conservation threshold'] = percent_similarity
                 conservedBlockParameterDict['DNA or amino acid substitute group'] = p_matrix_2
