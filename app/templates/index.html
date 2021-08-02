@@ -36,10 +36,11 @@
     a {
         color: #2b2b2b;
     }
+
     a:link {
         color: #2b2b2b;
     }
-    
+
     a:hover {
         color: #000000;
     }
@@ -48,60 +49,46 @@
 
 {% block content %}
 <br>
-<div style="background-color: white; border-radius: 20px; padding: 2rem; margin-top: 2rem;">
-<div class='row justify-content-center'>
-    <div class='col'>
-        <h3>Sequence Feature and Indel Region Extractor</h3>
-        <p style="margin-top: 1rem;"><b>SeqFIRE</b> is a program for extracting
-            regions of interest from a multiple sequence alignment.
-            The program can search for and extract region that contain insertions and deletions (indel), and output
-            details of the indel, as well as binary character matrix of
-            conserved simple indels for use in phylogenetic analysis. SeqFIRE can also extract blocks of conserved
-            columns from a sequence alignment, and output
-            these alignments in proper format for phylogenetic analysis.<br><br>
-            Click on the feature you want to extract...
+<div style="background-color: white; border-radius: 20px; padding: 36px 32px 40px 32px; margin-top: 3rem;">
+    <div class='row justify-content-center'>
+        <div class='col'>
+            <h3>SeqFIRE: Sequence Feature and Indel Region Extractor</h3>
+            <p style="margin-top: 1rem;"><b>SeqFIRE</b> is a program for extracting
+                regions of interest from a multiple sequence alignment.
+                The program can search for and extract region that contain insertions and deletions (indel), and output
+                details of the indel, as well as binary character matrix of
+                conserved simple indels for use in phylogenetic analysis. SeqFIRE can also extract blocks of conserved
+                columns from a sequence alignment, and output
+                these alignments in proper format for phylogenetic analysis.<br><br>
+                Click on the feature you want to extract...
+        </div>
     </div>
-</div>
 
-</p>
-<div class="row justify-content-around">
-    <div class="col-auto indelModule">
-        <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
-            <div class='media'>
-                <img src="static/logo-indel.png" width='100' height='100' class='align-self-center ml-4 mr-4'
-                    alt='indelpic'>
-                <div class='media-body'>
-                    <h3 class='mt-0' style="color:black;">Indel<br>region<br>module</h3>
-                </div>
-            </div>
-        </a>
+    </p>
+    <div class="row justify-content-around">
+        <div class="col-auto">
+            <a href="{{ url_for('seq_submit', analysis_mode = 1, co_analysis = 0) }}">
+                <img src="static/IndelModule.png" width='370px' alt='indelpic' style="-webkit-filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.25));
+                filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.25));">
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 0) }}">
+                <img src="static/ConservedModule.png" width='370px' alt='conservedpic' style="-webkit-filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.25));
+                filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.25));">
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 1) }}">
+                <img src="static/CoModule.png" width='370px' alt='copic' style="-webkit-filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.25));
+                filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.25));">
+            </a>
+        </div>
     </div>
-    <div class="col-auto conservedBlockModule">
-        <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 0) }}">
-            <div class='media'>
-                <img src="static/logo-conserved.png" width='100' height='100' class='align-self-center ml-4 mr-4'
-                    alt='conservedpic'>
-                <div class='media-body'>
-                    <h3 class='mt-0' style="color:black;">Conservation<br>block<br>module</h3>
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-auto coAnalysisModule">
-        <a href="{{ url_for('seq_submit', analysis_mode = 2, co_analysis = 1) }}">
-            <div class='media'>
-                <img src="static/logo-co.png" width='100' height='100' class='align-self-center ml-4 mr-4' alt='copic'>
-                <div class='media-body'>
-                    <h3 class='mt-0' style="color:black;"><br>Co-analysis<br></h3>
-                </div>
-            </div>
-        </a>
-    </div>
-</div>
 </div>
 <br><br>
 
-<div class="row" style="margin: 1rem; ">
+<div class="row" style="margin: 2rem 0rem 3rem 0rem; padding: 2rem 1rem 2rem 1rem; background-color: white; border-radius: 20px;">
     <div class="col">
         <h3>What's New</h3><br>
 
