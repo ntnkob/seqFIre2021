@@ -69,7 +69,10 @@ def seq_submit(analysis_mode,co_analysis):
             
         percent_accept_gap = form.percent_accept_gap.data if 'percent_accept_gap' in formData else 40.0
         p_matrix = form.p_matrix.data if 'p_matrix' in formData else "NONE"
-        p_matrix_2 = form.p_matrix_2.data if 'p_matrix_2' in formData else "NONE"
+        if 'p_matrix_2' in formData and form.p_matrix_2.data!=None:
+            p_matrix_2 = form.p_matrix_2.data
+        else:
+            p_matrix_2 = "NONE"
         inter_indels = form.inter_indels.data if 'inter_indels' in formData else 3 
         partial = form.partial.data if 'partial' in formData else "True"
         blocks = form.blocks.data if 'blocks' in formData else 3

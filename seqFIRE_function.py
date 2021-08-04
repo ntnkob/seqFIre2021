@@ -122,6 +122,7 @@ def getGapProfile(seq_lists):
 def getBodyAlignmentIndexes(seq_lists):
 	gap_profile = getGapProfile(seq_lists)
 	ind_n = gap_profile.find('XXXXX')					# Search for N-terminal edge of alignment body
+	if ind_n==-1: ind_n=0
 	ind_reverse_c = gap_profile[::-1].find('XXXXX')		# Search for C-terminal edge of alignment body
 	ind_c = len(gap_profile) - ind_reverse_c - 1  
 	return [ind_n, ind_c]
@@ -155,57 +156,50 @@ def getNRaggedRegion(n_position, seq_lists):
 				n_ragged.append([seq_list[0], seq])
 		else:
 			maskRef = genMaskRef(seq_lists, n_position)
-			if '?' in maskRef:
-				for seq_list in seq_lists:
-					rec = []
-					if not seq_list[1].startswith('-'):
-						n_ragged.append([seq_list[0], seq_list[1][:n_position]])
-					elif seq_list[1][:n_position].count('-') == n_position:
-						n_ragged.append([seq_list[0], maskRef])
+			for seq_list in seq_lists:
+				rec = []; newSeq = []
+				for i in range(len(maskRef)):
+					if maskRef[i]=='?':
+						if seq_list[1][i]=='-':
+							newSeq.append('?')
+						else: newSeq.append(seq_list[1][i])
 					else:
-						m = re.search(r'-[ACDEFGHIKLMNPQRSTVWXY]', str(seq_list[1][:n_position]))
-						try:
-							n = m.start() + 1
-						except:
-							n = 0
-						n_ragged.append([seq_list[0], maskRef[:n] + seq_list[1][n:n_position]])
-	elif partial == 'False':
+						newSeq.append(seq_list[1][i])
+				rec = [seq_list[0], "".join(newSeq)]
+				n_ragged.append(rec)
+	else:
 		for seq_list in seq_lists:
-			seq = '?' * n_position
+			seq = seq_list[1][:n_position]
 			n_ragged.append([seq_list[0], seq])
 	return n_ragged
 
 def getCRaggedRegion(c_position, seq_lists):
 	c_ragged = []
 	if partial == 'True':
-		if len(seq_lists[0][1])-c_position <= 3:
+		if len(seq_lists[0][1])-c_position-1 <= 3:
 			for seq_list in seq_lists:
 				seq = '?' * (len(seq_list[1]) - c_position - 1)
 				c_ragged.append([seq_list[0], seq])
 		else:
 			new_seq_lists = []
 			for seq_list in seq_lists:
-				a = [seq_list[0], seq_list[1][::-1]]
-				new_seq_lists.append(a)
+				oneRecord = [seq_list[0], seq_list[1][::-1]]
+				new_seq_lists.append(oneRecord)
 			inv_maskRef = genMaskRef(new_seq_lists, len(new_seq_lists[0][1])-c_position-1)
-			if '?' in inv_maskRef:
-				for seq_list in seq_lists:
-					rec = []
-					if not seq_list[1].endswith('-'):
-						c_ragged.append([seq_list[0], seq_list[1][c_position+1:]])
-					elif seq_list[1][c_position+1:].count('-') == len(seq_list[1])-c_position-1:
-						c_ragged.append([seq_list[0], inv_maskRef[::-1]])
+			for seq_list in seq_lists:
+				rec = []; newSeq = []
+				for i in range(len(new_seq_lists[0][1]) - c_position - 1):
+					if inv_maskRef[i]=='?':
+						if seq_list[1][i] == '-':
+							newSeq.append('?')
+						else: newSeq.append(seq_list[1][i])
 					else:
-						m = re.search(r'-[ACDEFGHIKLMNPQRSTVWXY]', str(seq_list[1][::-1]))
-						try:
-							n = m.start() + 1
-						except:
-							n = 0
-						rec = [seq_list[0], str(seq_list[1][c_position+1:len(seq_list[1])-n]) + str(inv_maskRef[n-1::-1])]
-						c_ragged.append(rec)
-	elif partial == 'False':
+						newSeq.append(seq_list[1][i])
+				rec = [seq_list[0], ("".join(newSeq)[::-1])]
+				c_ragged.append(rec)
+	else:
 		for seq_list in seq_lists:
-			seq = '?' * (len(seq_list[1]) - c_position - 1)
+			seq = seq_list[1][c_position+1:]
 			c_ragged.append([seq_list[0], seq])
 	return c_ragged
 
@@ -1118,7 +1112,7 @@ def checkMSAQuality(seqList):
                 else: break
         biggestGap = headGap if headGap>tailGap else tailGap
         if biggestGap>=0.4*len(oneSeq[1]):
-            errormsg.append('The sequence %s has at least 40% continuous gap at head or tail' % oneSeq[0])
+            errormsg.append('The sequence %s has at least' % oneSeq[0] + ' continuous gap at head or tail')
     return errormsg if errormsg else True
     
 #This function combines all 4 checking functions into one
@@ -1186,7 +1180,7 @@ def startAnalysis(analysis_mode = 1,
 	if multidata == 1:
 		#Validate if the sequence is in FASTA format
 		checkSeqResult = checkSeqFormat(inputSeq)
-		if checkSeqResult:
+		if checkSeqResult == True:
 			handle = parseFasta(inputSeq)
 		else:
 			return (False, checkSeqResult)

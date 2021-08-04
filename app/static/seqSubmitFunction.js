@@ -149,7 +149,7 @@ $(document).ready(function() {
     $(document).on('click','#setParamIndelButton', function() {
         $('#similarity_threshold-0-start_range').val("75");
         $('#similarity_threshold-0-end_range').val("100");
-        $('select[name=p_matrix]').val("NONE")
+        $('select[id=p_matrix]').val("NONE");
         $('#inter_indels').val("3");
         $('input[name=partial][value=False]').prop("checked",true);
     });
@@ -157,7 +157,7 @@ $(document).ready(function() {
     $(document).on('click','#setParamConservedButton', function() {
         $('#percent_similarity-0-start_range').val("75");
         $('#percent_similarity-0-end_range').val("100");
-        $('select[name=p_matrix_2]').val("NONE")
+        $('select[id=p_matrix_2]').val("NONE");
         $('#percent_accept_gap').val("40");
         $('#fuse').val("3");
         $('#blocks').val("3");
@@ -220,15 +220,15 @@ MSLTRTERTIILSLWSKISTQADVIGTETLERLFSCYPQAKTYFPHFDLHSGSAQLRAHGSKVVAAVGDAVKSIDNVTSA
     });
 
     $("input[id=seqType-0]").click(function () {
-        $("select[id=p_matrix]").val("NONE")
-        $("select[id=p_matrix]").attr("disabled",true)
-        $("select[id=p_matrix_2]").val("NONE")
-        $("select[id=p_matrix_2]").attr("disabled",true)
+        $("select[id=p_matrix]").val("NONE");
+        $("select[id=p_matrix]").attr("disabled",true);
+        $("select[id=p_matrix_2]").val("NONE");
+        $("select[id=p_matrix_2]").attr("disabled",true);
     });
 
     $("input[id=seqType-1]").click(function () {
-        $("select[id=p_matrix]").attr("disabled",false)
-        $("select[id=p_matrix_2]").attr("disabled",false)
+        $("select[id=p_matrix]").attr("disabled",false);
+        $("select[id=p_matrix_2]").attr("disabled",false);
     });
     
 });
