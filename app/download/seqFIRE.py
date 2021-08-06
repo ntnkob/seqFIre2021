@@ -27,13 +27,12 @@ pMatrices = {'PAM250': [('?'), ('M','I','V','L'), ('D','N','H','Q','E'), ('F','I
 prog_title = '#  SeqFIRE: Sequence Feature and Indel Region Extractor\n#  version 1.0.1 (c) 2011'
 infile = 'infile'
 analysis_mode = 1
-similarity_threshold = 75.0
-percent_similarity = 75.0
+similarity_threshold = [[75.0,100.0]]
+percent_similarity = [[75.0,100.0]]
 percent_accept_gap = 40.0
 p_matrix = 'NONE'
 p_matrix_2 = 'NONE'
 inter_indels = 3
-twilight = 'True'
 partial = 'True'
 blocks = 3
 strick_combination = 'False'
@@ -41,6 +40,7 @@ combine_with_indel = 'False'
 fuse = 4
 multidata = 1
 output_mode = 2
+seqType = 'Protein'
 
 def usage():
 	text="""
@@ -126,8 +126,8 @@ def parseFasta(records):
 	for r in rec:
 		if len(r[0]) > title_length: title_length = len(r[0])
 	
-	if title_length < 16:
-		for r in rec: r[0] = str(r[0]) + ' '*(16 - len(r[0])) + ': '
+	if title_length < 23:
+		for r in rec: r[0] = str(r[0]) + ' '*(23 - len(r[0])) + ': '
 	else:
 		for r in rec: r[0] = str(r[0]) + ' '*(title_length - len(r[0])) + ': '
 	return rec
@@ -154,8 +154,9 @@ def getGapProfile(seq_lists):
 def getBodyAlignmentIndexes(seq_lists):
 	gap_profile = getGapProfile(seq_lists)
 	ind_n = gap_profile.find('XXXXX')					# Search for N-terminal edge of alignment body
+	if ind_n==-1: ind_n=0
 	ind_reverse_c = gap_profile[::-1].find('XXXXX')		# Search for C-terminal edge of alignment body
-	ind_c = len(gap_profile) - ind_reverse_c - 1
+	ind_c = len(gap_profile) - ind_reverse_c - 1  
 	return [ind_n, ind_c]
 
 def getBodyOfAlignment(ind, seq_lists):
@@ -187,57 +188,50 @@ def getNRaggedRegion(n_position, seq_lists):
 				n_ragged.append([seq_list[0], seq])
 		else:
 			maskRef = genMaskRef(seq_lists, n_position)
-			if '?' in maskRef:
-				for seq_list in seq_lists:
-					rec = []
-					if not seq_list[1].startswith('-'):
-						n_ragged.append([seq_list[0], seq_list[1][:n_position]])
-					elif seq_list[1][:n_position].count('-') == n_position:
-						n_ragged.append([seq_list[0], maskRef])
+			for seq_list in seq_lists:
+				rec = []; newSeq = []
+				for i in range(len(maskRef)):
+					if maskRef[i]=='?':
+						if seq_list[1][i]=='-':
+							newSeq.append('?')
+						else: newSeq.append(seq_list[1][i])
 					else:
-						m = re.search(r'-[ACDEFGHIKLMNPQRSTVWXY]', str(seq_list[1][:n_position]))
-						try:
-							n = m.start() + 1
-						except:
-							n = 0
-						n_ragged.append([seq_list[0], maskRef[:n] + seq_list[1][n:n_position]])
-	elif partial == 'False':
+						newSeq.append(seq_list[1][i])
+				rec = [seq_list[0], "".join(newSeq)]
+				n_ragged.append(rec)
+	else:
 		for seq_list in seq_lists:
-			seq = '?' * n_position
+			seq = seq_list[1][:n_position]
 			n_ragged.append([seq_list[0], seq])
 	return n_ragged
 
 def getCRaggedRegion(c_position, seq_lists):
 	c_ragged = []
 	if partial == 'True':
-		if len(seq_lists[0][1])-c_position <= 3:
+		if len(seq_lists[0][1])-c_position-1 <= 3:
 			for seq_list in seq_lists:
 				seq = '?' * (len(seq_list[1]) - c_position - 1)
 				c_ragged.append([seq_list[0], seq])
 		else:
 			new_seq_lists = []
 			for seq_list in seq_lists:
-				a = [seq_list[0], seq_list[1][::-1]]
-				new_seq_lists.append(a)
+				oneRecord = [seq_list[0], seq_list[1][::-1]]
+				new_seq_lists.append(oneRecord)
 			inv_maskRef = genMaskRef(new_seq_lists, len(new_seq_lists[0][1])-c_position-1)
-			if '?' in inv_maskRef:
-				for seq_list in seq_lists:
-					rec = []
-					if not seq_list[1].endswith('-'):
-						c_ragged.append([seq_list[0], seq_list[1][c_position+1:]])
-					elif seq_list[1][c_position+1:].count('-') == len(seq_list[1])-c_position-1:
-						c_ragged.append([seq_list[0], inv_maskRef[::-1]])
+			for seq_list in seq_lists:
+				rec = []; newSeq = []
+				for i in range(len(new_seq_lists[0][1]) - c_position - 1):
+					if inv_maskRef[i]=='?':
+						if seq_list[1][i] == '-':
+							newSeq.append('?')
+						else: newSeq.append(seq_list[1][i])
 					else:
-						m = re.search(r'-[ACDEFGHIKLMNPQRSTVWXY]', str(seq_list[1][::-1]))
-						try:
-							n = m.start() + 1
-						except:
-							n = 0
-						rec = [seq_list[0], str(seq_list[1][c_position+1:len(seq_list[1])-n]) + str(inv_maskRef[n-1::-1])]
-						c_ragged.append(rec)
-	elif partial == 'False':
+						newSeq.append(seq_list[1][i])
+				rec = [seq_list[0], ("".join(newSeq)[::-1])]
+				c_ragged.append(rec)
+	else:
 		for seq_list in seq_lists:
-			seq = '?' * (len(seq_list[1]) - c_position - 1)
+			seq = seq_list[1][c_position+1:]
 			c_ragged.append([seq_list[0], seq])
 	return c_ragged
 
@@ -267,12 +261,10 @@ def getSimilarityScore(aa):
 			aa_dict[a] = aa_dict[a] + 1
 		k = max(aa_dict, key=aa_dict.get)
 		similarity = (float(aa_dict[k]) * 100.0) / float(len(aa))
-		if twilight == 'True':
-			if similarity >= 30.0: return 'C'
-			else: return '.'
-		elif twilight == 'False':
-			if similarity >= similarity_threshold: return 'C'
-			else: return '.'
+		for onePair in similarity_threshold:
+			if onePair[0]<=similarity<=onePair[1]:
+				return 'C'
+		return '.'
 	else:
 		pMatrix = pMatrices[p_matrix]
 		c = []
@@ -285,12 +277,10 @@ def getSimilarityScore(aa):
 			for aa_set in aa_sets: m = m + int(aa_dict[aa_set])
 			c.append((float(m)*100.0)/float(len(aa)))
 		similarity = max(c)
-		if twilight == 'True':
-			if similarity >= 30.0: return 'C'
-			else: return '.'
-		elif twilight == 'False':
-			if similarity >= similarity_threshold: return 'C'
-			else: return '.'
+		for onePair in similarity_threshold:
+			if onePair[0]<=similarity<=onePair[1]:
+				return 'C'
+		return '.'
 
 def getConservedBlockProfile(pseudoSeq_lists):
 	consBlkProfile = ''
@@ -529,15 +519,9 @@ def getIndelCharacter(output_indel_2, simple_indel_positions, indel_positions):
 
 def indelExtraction(handle):
 	pseudoalignments = genPseudoalignment(handle)
-	#print("Pseudo alignments:")
-	#for onepalign in pseudoalignments:
-    #		print(onepalign)
 	conserved_block_profile = getConservedBlockProfile(pseudoalignments)
-	#print("Conserved block profile:\n",conserved_block_profile)
 	indel_profile = getIndelProfile(conserved_block_profile)
-	#print("Indel profile:\n",indel_profile)
 	indel_positions = getIndelPositions(indel_profile)
-	#print("Indel positions:\n",indel_positions)
 	ruler = getRuler(len(handle[0][0]), len(handle[0][1]))
 
 	######################
@@ -637,10 +621,12 @@ def getSimilarityProfile(similarity_list):
 	for i in similarity_list:
 		if i == '-':
 			similarityProfile = similarityProfile + i
-		elif i >= percent_similarity:
-			similarityProfile = similarityProfile + 'H'
-		elif i < percent_similarity:
-			similarityProfile = similarityProfile + '.'
+		else:
+			for onePair in percent_similarity:
+				if onePair[0]<=i<=onePair[1]:
+					similarityProfile = similarityProfile + 'H'
+					break
+			else: similarityProfile = similarityProfile + '.'
 	return similarityProfile
 
 def getSimilarityBlocks(similarity_profile):
@@ -836,8 +822,8 @@ def genNexusWithConservedProfile(handle, conserved_blocks, simple_indel_position
  		    \tFORMAT MISSING=? DATATYPE=PROTEIN GAP=- EQUATE="0=K 1=D";
  		    \tOPTIONS GAPMODE=MISSING;
 			 
-
 			 MATRIX''' % (len(handle),len(handle[0][1]))
+
 	output_conserved_4.append(head)
 
 	r = getRuler(len(handle[0][0]), len(handle[0][1])).split('\n')
@@ -1141,7 +1127,7 @@ def checkMSAQuality(seqList):
                 else: break
         biggestGap = headGap if headGap>tailGap else tailGap
         if biggestGap>=0.4*len(oneSeq[1]):
-            errormsg.append('The sequence %s has at least 40% continuous gap at head or tail' % oneSeq[0])
+            errormsg.append('The sequence %s has at least' % oneSeq[0] + ' continuous gap at head or tail')
     return errormsg if errormsg else True
     
 #This function combines all 4 checking functions into one
@@ -1171,6 +1157,15 @@ def checkReadiness(seqList, selectedType):
     else:
         return True
 
+def showError(errorDict):
+	print('***************\n* ERROR FOUND *\n***************')
+	if errorDict['Fatal']==True:
+		raise Exception(errorDict['error_messages'][0])
+	else:
+		for oneError in errorDict['error_messages']:
+			print(oneError)
+	print("\n")
+		
 #########################################################################
 ######                                                             ######
 ######         S e q F I R E ' s   M A I N   P R O G R A M         ######
@@ -1202,14 +1197,13 @@ for opt, arg in opts:
 	if opt == "-g": p_matrix = arg
 	if opt == "-k": p_matrix_2 = arg
 	if opt == "-b": inter_indels = int(arg)
-	if opt == "-t": twilight = str(arg)
-	if opt == "-p": partial = str(arg)
 	if opt == "-s": blocks = int(arg)
 	if opt == "-f": fuse = int(arg)
 	if opt == "-r": strick_combination = str(arg)
 	if opt == "-e": combine_with_indel = str(arg)
 	if opt == "-m": multidata = int(arg)
 	if opt == "-o": output_mode = int(arg)
+	if opt == '-t': seqType = arg
 
 ###################################
 ##   A N A L Y S I S   Z O N E   ##
@@ -1219,36 +1213,40 @@ if multidata == 1:
     f = open(r'%s' % (infile), 'r')
     record = f.read()
     f.close()
-    if checkSeqFormat(record):
+    checkSeqResult = checkSeqFormat(record)
+    if checkSeqResult == True:
 	    handle = parseFasta(record)
     else:
-        raise Exception("FATAL ERROR: The input is not in FASTA format")
-    readinessResult = checkReadiness(handle,'Protein')
-    if readinessResult[0]!=True:
-        if readinessResult[0]=='Fatal error':
-            raise Exception(readinessResult[1])
-        else:
-            warnings.warn(readinessResult[1])
+        showError(checkSeqResult)
+
+    readinessResult = checkReadiness(handle,seqType)
+    if readinessResult != True:
+        showError(readinessResult)
     if analysis_mode == 1: indelExtraction(handle) ### INDEL REGION MODULE ###
     elif analysis_mode == 2: conservedBlockExtraction(handle) ### CONSERVED BLOCK MODULE ###
-
 elif multidata == 2:
 	f = open(r'%s' % (infile), 'r')
-	records = f.read().split('==seq==')
+	records = f.read()
 	f.close()
-	del records[0]
+	checkPreppedResult = checkPrepped(records)
+	if checkPreppedResult == True:
+		records = records.split('==seq==')
+		del records[0]
+	else:
+		showError(checkPreppedResult)
 	for record in records:
 		a = record.split('==fire==')
-		filename = a[0]
-		print (filename)
-		handle = parseFasta(a[1])
-		if checkReadiness(handle)==False: warnings.warn("Something is wrong!")
 
+		handle = parseFasta(a[1])
+		readinessResult = checkReadiness(handle,seqType)
+		
+		if readinessResult != True:
+			showError(readinessResult)
 		if output_mode == 1 or output_mode == 3:
-			print ('==seq==%s==fire==' % filename)
+			print ('==seq==%s==fire==' % infile)
 		elif output_mode == 2 or output_mode == 3:
 			f = open(r'outfile.txt', 'a')
-			f.write('\n==seq==%s==fire==\n' % filename)
+			f.write('\n==seq==%s==fire==\n' % infile)
 			f.close()
 
 		if analysis_mode == 1: indelExtraction(handle) ### INDEL REGION MODULE ###

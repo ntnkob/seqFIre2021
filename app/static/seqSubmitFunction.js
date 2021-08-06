@@ -220,14 +220,11 @@ MSLTRTERTIILSLWSKISTQADVIGTETLERLFSCYPQAKTYFPHFDLHSGSAQLRAHGSKVVAAVGDAVKSIDNVTSA
     });
 
     $("input[id=seqType-0]").click(function () {
-        $("select[id=p_matrix]").val("NONE");
-        $("select[id=p_matrix]").attr("disabled",true);
         $("select[id=p_matrix_2]").val("NONE");
         $("select[id=p_matrix_2]").attr("disabled",true);
     });
 
     $("input[id=seqType-1]").click(function () {
-        $("select[id=p_matrix]").attr("disabled",false);
         $("select[id=p_matrix_2]").attr("disabled",false);
     });
     

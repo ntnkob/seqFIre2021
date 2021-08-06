@@ -801,8 +801,7 @@ def genNexusWithConservedProfile(handle, conserved_blocks, simple_indel_position
 			 MATRIX''' % (len(handle),len(handle[0][1]))
 
 	output_conserved_4.append(head)
-	for oneHandle in handle:
-		print(oneHandle)
+
 	r = getRuler(len(handle[0][0]), len(handle[0][1])).split('\n')
 	ruler = '[ ' + r[0][1:] + ' '*(len(r[1])-len(r[0])) + ']\n[ ' + r[1][1:] + ']'
 	output_conserved_4.append(ruler)
@@ -1111,8 +1110,9 @@ def checkMSAQuality(seqList):
                     tailGap = tailGap+1
                 else: break
         biggestGap = headGap if headGap>tailGap else tailGap
+        print("Biggestgap = %d/%d" % (biggestGap, len(oneSeq[1])))
         if biggestGap>=0.4*len(oneSeq[1]):
-            errormsg.append('The sequence %s has at least' % oneSeq[0] + ' continuous gap at head or tail')
+            errormsg.append('The sequence %s has at least 40 percent' % oneSeq[0] + ' continuous gap at head or tail')
     return errormsg if errormsg else True
     
 #This function combines all 4 checking functions into one
@@ -1187,8 +1187,7 @@ def startAnalysis(analysis_mode = 1,
 		
 		#Validate sequence and alignment warnings
 		readinessResult = checkReadiness(handle,seqType)
-		print("READINESS RESULT")
-		print(readinessResult)
+
 		if readinessResult == True or submitAnyway == 'True':
 			if analysis_mode == 1: return (True, indelExtraction(handle), informationEnricher(handle)) ### INDEL REGION MODULE ###
 			elif analysis_mode == 2: return (True, conservedBlockExtraction(handle), informationEnricher(handle)) ### CONSERVED BLOCK MODULE ###
@@ -1198,7 +1197,7 @@ def startAnalysis(analysis_mode = 1,
 	elif multidata == 2:
         #Validate if the sequence is properly prepped and in FASTA format
 		checkPreppedResult = checkPrepped(inputSeq)
-		if checkPreppedResult:
+		if checkPreppedResult == True:
 			records = inputSeq.split('==seq==')
 			del records[0]
 		else: 
